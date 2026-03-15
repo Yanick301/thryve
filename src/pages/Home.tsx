@@ -53,8 +53,8 @@ function HeroSection() {
         style={{ background: 'radial-gradient(circle, rgba(20,184,166,0.6) 0%, transparent 70%)' }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-20 w-full">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           {/* Left: Content */}
           <div>
             {/* Badge */}
@@ -291,7 +291,7 @@ function SocialProofBanner() {
   const logos = ['Netflix', 'Spotify', 'Figma', 'Notion', 'Linear', 'Vercel', 'Stripe'];
   return (
     <section className="py-12 border-y border-border bg-muted/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-6 lg:px-12">
         <p className="text-center text-sm text-muted-foreground font-medium mb-8">
           Ils font confiance à Thryve pour leur social media
         </p>
@@ -311,7 +311,7 @@ function SocialProofBanner() {
 function FeaturesSection() {
   return (
     <section id="features" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -332,7 +332,7 @@ function FeaturesSection() {
         </motion.div>
 
         {/* Features grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
           {FEATURES.map((feature, index) => (
             <FeatureCard key={feature.title} {...feature} index={index} />
           ))}
@@ -381,8 +381,8 @@ function BenefitsSection() {
 
   return (
     <section className="py-24 bg-muted/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-24 items-start">
           {/* Creators */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -455,8 +455,8 @@ function StatsSection() {
 
   return (
     <section className="py-16" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-full mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8 gap-8">
           {stats.map(({ value, label, icon: Icon }, index) => (
             <motion.div
               key={label}
@@ -481,7 +481,7 @@ function StatsSection() {
 function TestimonialsSection() {
   return (
     <section id="testimonials" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -499,7 +499,7 @@ function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
           {MOCK_TESTIMONIALS.map((t, index) => (
             <TestimonialCard key={t.id} {...t} index={index} />
           ))}
@@ -515,7 +515,7 @@ function PricingSection() {
 
   return (
     <section id="pricing" className="py-24 bg-muted/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -634,7 +634,7 @@ function FAQSection() {
 function CTASection() {
   return (
     <section className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
