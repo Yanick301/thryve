@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "preview:dev": "npm run build:dev && npm run preview",
     "test:edge-functions": "cd supabase/edge_function && deno task test",
-    "automation": "node automation/index.js"
+    "automation": "node automation/index.js",
+    "dev:all": "npm run automation & npm run dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
