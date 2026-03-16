@@ -125,7 +125,7 @@ function HeroSection() {
                     boxShadow: '0 8px 30px rgba(79,70,229,0.3)',
                   }}
                 >
-                  Commencer — Gratuit
+                  Démarrer l'Expérience
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
@@ -362,13 +362,13 @@ function FeaturesSection() {
           viewport={{ once: true }}
           className="mt-12 text-center"
         >
-          <Link to={ROUTE_PATHS.REGISTER}>
+          <Link to={ROUTE_PATHS.DASHBOARD}>
             <Button
               size="lg"
               className="font-bold rounded-2xl px-8 py-6"
               style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
             >
-              Essayer gratuitement
+              Accéder à la Plateforme
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
@@ -646,14 +646,14 @@ function PricingCard({ plan, yearly, index }: any) {
           </li>
         ))}
       </ul>
-      <Link to={ROUTE_PATHS.REGISTER} className="w-full relative z-10">
+      <Link to={ROUTE_PATHS.DASHBOARD} className="w-full relative z-10">
         <Button
           className={`w-full h-24 rounded-[2rem] font-black uppercase tracking-[0.4em] text-[10px] transition-all duration-700 border-none ${isFeatured
               ? 'bg-primary text-white shadow-[0_30px_60px_-15px_rgba(79,70,229,0.5)]'
               : 'glass-master border-white/50 text-foreground hover:bg-white/20'
             }`}
         >
-          DÉPLOIEMENT THRYVE
+          DÉPLOIEMENT ALPHA
         </Button>
       </Link>
     </motion.div>
@@ -759,12 +759,12 @@ function CTASection() {
               Rejoignez les créateurs qui utilisent Thryve pour grandir plus vite et travailler plus intelligemment.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link to={ROUTE_PATHS.REGISTER}>
+              <Link to={ROUTE_PATHS.DASHBOARD}>
                 <Button
                   size="lg"
                   className="bg-white text-primary hover:bg-white/90 font-bold rounded-2xl px-10 py-6 text-base shadow-xl"
                 >
-                  Commencer gratuitement
+                  Accéder Immédiatement
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
@@ -895,26 +895,6 @@ const MOCK_FAQ = [
 
 // ─── Page d'accueil principale ────────────────────────────────────────
 export default function Home() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      navigate(ROUTE_PATHS.DASHBOARD);
-    }
-  }, [isAuthenticated, isLoading, navigate]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  // If authenticated, we return null while navigate handles the redirect
-  if (isAuthenticated) return null;
-
   return (
     <div className="min-h-screen bg-background">
       <LandingHeader />

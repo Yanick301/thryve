@@ -74,34 +74,14 @@ export function LandingHeader() {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-4">
-            {isLoading ? (
-              <div className="w-20 h-8 bg-muted animate-pulse rounded-lg" />
-            ) : isAuthenticated ? (
-              <Link to={ROUTE_PATHS.DASHBOARD}>
-                <Button 
-                  size="sm" 
-                  className="font-black uppercase tracking-[0.2em] text-[10px] rounded-xl px-6 py-5 bg-primary text-white shadow-lg hover:scale-105 transition-all"
-                >
-                  Tableau de Bord
-                </Button>
-              </Link>
-            ) : (
-              <>
-                <Link to={ROUTE_PATHS.LOGIN}>
-                  <Button variant="ghost" size="sm" className="font-bold text-[10px] uppercase tracking-widest hover:bg-muted/60">
-                    Se connecter
-                  </Button>
-                </Link>
-                <Link to={ROUTE_PATHS.REGISTER}>
-                  <Button
-                    size="sm"
-                    className="font-black uppercase tracking-[0.2em] text-[10px] rounded-xl px-6 py-5 bg-primary text-white shadow-lg hover:scale-105 transition-all"
-                  >
-                    Essayer Maintenant
-                  </Button>
-                </Link>
-              </>
-            )}
+            <Link to={ROUTE_PATHS.DASHBOARD}>
+              <Button 
+                size="sm" 
+                className="font-black uppercase tracking-[0.2em] text-[10px] rounded-xl px-10 py-6 bg-primary text-white shadow-lg hover:scale-105 transition-all"
+              >
+                Accéder à la Plateforme
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu toggle */}
@@ -138,26 +118,11 @@ export function LandingHeader() {
               ))}
             </nav>
             <div className="flex flex-col gap-3 pt-4 border-t border-border mt-4">
-              {isLoading ? (
-                <div className="h-10 bg-muted animate-pulse rounded-xl" />
-              ) : isAuthenticated ? (
-                <Link to={ROUTE_PATHS.DASHBOARD} onClick={() => setMenuOpen(false)}>
-                  <Button className="w-full font-black uppercase tracking-widest text-xs py-5">
-                    Tableau de Bord
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to={ROUTE_PATHS.LOGIN} onClick={() => setMenuOpen(false)}>
-                    <Button variant="outline" className="w-full font-bold uppercase tracking-widest text-xs py-5">Se connecter</Button>
-                  </Link>
-                  <Link to={ROUTE_PATHS.REGISTER} onClick={() => setMenuOpen(false)}>
-                    <Button className="w-full font-black uppercase tracking-widest text-xs py-5">
-                      Essayer Maintenant
-                    </Button>
-                  </Link>
-                </>
-              )}
+              <Link to={ROUTE_PATHS.DASHBOARD} onClick={() => setMenuOpen(false)}>
+                <Button className="w-full font-black uppercase tracking-widest text-xs py-5">
+                  Accéder à la Plateforme
+                </Button>
+              </Link>
             </div>
           </motion.div>
         )}
@@ -385,11 +350,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <Settings className="mr-3 h-4 w-4 text-primary" />
                 Paramètres
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-white/40 my-2" />
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
-                <LogOut className="mr-3 h-4 w-4" />
-                Se déconnecter
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -460,11 +420,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuItem onClick={() => navigate(ROUTE_PATHS.SETTINGS)} className="rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
                   <Settings className="mr-3 h-4 w-4 text-primary" />
                   Paramètres
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-white/40 my-2" />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
-                  <LogOut className="mr-3 h-4 w-4" />
-                  Se déconnecter
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

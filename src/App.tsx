@@ -65,20 +65,20 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public */}
+          {/* Direct Access */}
           <Route path={ROUTE_PATHS.HOME} element={<Home />} />
-          <Route path={ROUTE_PATHS.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
-          <Route path={ROUTE_PATHS.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
-          <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+          <Route path={ROUTE_PATHS.LOGIN} element={<Navigate to={ROUTE_PATHS.DASHBOARD} replace />} />
+          <Route path={ROUTE_PATHS.REGISTER} element={<Navigate to={ROUTE_PATHS.DASHBOARD} replace />} />
+          <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<Navigate to={ROUTE_PATHS.DASHBOARD} replace />} />
 
-          {/* Protected Dashboard */}
-          <Route path={ROUTE_PATHS.DASHBOARD} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.MEDIA} element={<ProtectedRoute><MediaLibrary /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.CREATE_POST} element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.CALENDAR} element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.ANALYTICS} element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.ACCOUNTS} element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
-          <Route path={ROUTE_PATHS.SETTINGS} element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          {/* Dashboard Routes */}
+          <Route path={ROUTE_PATHS.DASHBOARD} element={<Dashboard />} />
+          <Route path={ROUTE_PATHS.MEDIA} element={<MediaLibrary />} />
+          <Route path={ROUTE_PATHS.CREATE_POST} element={<CreatePost />} />
+          <Route path={ROUTE_PATHS.CALENDAR} element={<CalendarPage />} />
+          <Route path={ROUTE_PATHS.ANALYTICS} element={<Analytics />} />
+          <Route path={ROUTE_PATHS.ACCOUNTS} element={<Accounts />} />
+          <Route path={ROUTE_PATHS.SETTINGS} element={<SettingsPage />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to={ROUTE_PATHS.HOME} replace />} />
