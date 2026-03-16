@@ -2,8 +2,8 @@
 // THRYVE — Landing Page (Home)
 // ============================================================
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
