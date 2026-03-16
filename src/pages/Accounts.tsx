@@ -150,7 +150,7 @@ function AccountCard({ account, onDisconnect, onSync }: {
 }
 
 // ─── Connect Platform Modal Nexus ───────────────────────────────────
-function ConnectModal({ onClose }: { onClose: () => void }) {
+function ConnectModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const { user } = useAuth();
   const [step, setStep] = useState<'choose' | 'credentials' | 'connecting' | 'success'>('choose');
   const [selectedPlatform, setSelectedPlatform] = useState<'instagram' | 'threads' | null>(null);
@@ -178,6 +178,7 @@ function ConnectModal({ onClose }: { onClose: () => void }) {
     }
 
     setStep('success');
+    onSuccess();
     setTimeout(onClose, 1500);
   };
 
@@ -329,11 +330,40 @@ function ConnectModal({ onClose }: { onClose: () => void }) {
 
 // ─── Main Accounts Page ───────────────────────────────────────
 export default function Accounts() {
-  const [accounts, setAccounts] = useState(MOCK_ACCOUNTS);
+  const { user } = useAuth();
+  const [accounts, setAccounts] = useState<SocialAccount[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [automationStatus, setAutomationStatus] = useState<'online' | 'offline' | 'checking'>('checking');
 
+  const fetchAccounts = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('social_accounts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching accounts:', error);
+    } else {
+      // Map Supabase data to SocialAccount type
+      const mappedAccounts: SocialAccount[] = (data || []).map(acc => ({
+        id: acc.id,
+        platform: acc.platform,
+        username: acc.username,
+        followers: acc.followers || 0,
+        isConnected: true, // Assuming if it's in DB, it's connected
+        lastSync: acc.last_sync,
+      }));
+      setAccounts(mappedAccounts);
+    }
+    setLoading(false);
+  };
+
   React.useEffect(() => {
+    fetchAccounts();
+
     const checkAutomation = async () => {
       try {
         const res = await fetch('http://localhost:3001/health');
@@ -344,7 +374,7 @@ export default function Accounts() {
       }
     };
     checkAutomation();
-  }, []);
+  }, [user]);
 
   const handleDisconnect = (id: string) => {
     setAccounts((prev) =>
@@ -408,14 +438,24 @@ export default function Accounts() {
                 </div>
                 <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.4em]">ALPHA STATUS</span>
               </div>
-              <p className="text-6xl font-black tracking-tighter" style={{ color }}>{value}</p>
+              <p className="text-6xl font-black tracking-tighter" style={{ color }}>
+                {loading ? '...' : value}
+              </p>
               <p className="text-[10px] text-foreground/40 mt-4 font-black uppercase tracking-widest">{label}</p>
             </div>
           ))}
         </div>
 
+        {/* Loading state */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Synchronisation de vos unités...</p>
+          </div>
+        )}
+
         {/* Connected accounts */}
-        {connected.length > 0 && (
+        {!loading && connected.length > 0 && (
           <div>
             <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">Comptes actifs</h2>
             <div className="space-y-4">
@@ -434,7 +474,7 @@ export default function Accounts() {
         )}
 
         {/* Disconnected accounts */}
-        {disconnected.length > 0 && (
+        {!loading && disconnected.length > 0 && (
           <div>
             <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">Comptes inactifs</h2>
             <div className="space-y-4">
@@ -449,6 +489,15 @@ export default function Accounts() {
                 ))}
               </AnimatePresence>
             </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && accounts.length === 0 && (
+          <div className="text-center py-20 glass-master rounded-[3rem] border-white/20">
+             <Users className="w-16 h-16 text-foreground/10 mx-auto mb-6" />
+             <p className="text-xl font-black text-foreground/40 uppercase tracking-tighter">AUCUNE UNITÉ SYNCHRONISÉE</p>
+             <p className="text-[10px] text-foreground/20 font-black uppercase tracking-widest mt-4">LE NEXUS EST VIDE. INITIALISEZ VOTRE PREMIÈRE CONNEXION.</p>
           </div>
         )}
 
@@ -495,7 +544,12 @@ export default function Accounts() {
 
       {/* Modal */}
       <AnimatePresence>
-        {showConnectModal && <ConnectModal onClose={() => setShowConnectModal(false)} />}
+        {showConnectModal && (
+          <ConnectModal 
+            onClose={() => setShowConnectModal(false)} 
+            onSuccess={fetchAccounts}
+          />
+        )}
       </AnimatePresence>
     </DashboardLayout>
   );
