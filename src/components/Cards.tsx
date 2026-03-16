@@ -115,7 +115,7 @@ interface PricingCardProps {
 }
 
 export function PricingCard({ plan, yearly, index }: PricingCardProps) {
-  const price = yearly ? plan.yearlyPrice : plan.price;
+  const price = yearly ? plan.priceYearly : plan.priceMonthly;
 
   return (
     <motion.div
@@ -257,7 +257,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     published: { label: 'Publié', className: 'bg-accent/10 text-accent' },
     failed: { label: 'Échec', className: 'bg-destructive/10 text-destructive' },
   };
-  const { label, color } = map[status];
+  const { label, className } = map[status];
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${className}`}>
       {label}
@@ -273,16 +273,16 @@ interface PlatformBadgeProps {
 
 export function PlatformBadge({ platform, size = 'sm' }: PlatformBadgeProps) {
   const map = {
-    instagram: { label: 'Instagram', color: '#E1306C' },
-    threads: { label: 'Threads', color: '#000000' },
-    both: { label: 'IG + Threads', color: '#4F46E5' },
+    instagram: { label: 'Instagram', color: '#E1306C', icon: Icons.Instagram },
+    threads: { label: 'Threads', color: '#000000', icon: Icons.Globe },
+    both: { label: 'IG + Threads', color: '#4F46E5', icon: Icons.Sparkles },
   };
-  const { label, color } = map[platform];
+  const { label, color, icon: Icon } = map[platform];
   const sizeClass = size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-3 py-1';
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-semibold ${sizeClass}`}
+      className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${sizeClass}`}
       style={{ backgroundColor: `${color}15`, color }}
     >
       <Icon size={size === 'sm' ? 12 : 16} />

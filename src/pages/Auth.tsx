@@ -60,32 +60,32 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Decorative Side Decor (Desktop Elite) */}
-      <div className="hidden xl:flex w-[600px] h-screen relative overflow-hidden border-l border-white/40 glass-master">
+      <div className="hidden xl:flex w-[500px] 2xl:w-[600px] h-screen relative overflow-hidden border-l border-white/40 glass-master">
         <BackgroundVideo 
           src="https://cdn.pixabay.com/vimeo/459039322/crystal-49938.mp4?width=1280&hash=d3e0f9b6c0e0b3b4f6b4f6b4f6b4f6b4f6b4f6b4"
           overlayOpacity={0.1}
         />
-        <div className="relative z-10 flex flex-col justify-center px-20 w-full">
-          <div className="w-24 h-24 rounded-[2rem] glass-master flex items-center justify-center mb-12 border-white/50 shadow-inner">
-            <Zap className="w-12 h-12 text-primary animate-crystal" />
+        <div className="relative z-10 flex flex-col justify-center px-12 2xl:px-20 w-full overflow-y-auto py-10">
+          <div className="w-20 h-20 rounded-[2rem] glass-master flex items-center justify-center mb-8 border-white/50 shadow-inner shrink-0">
+            <Zap className="w-10 h-10 text-primary animate-crystal" />
           </div>
-          <h2 className="text-7xl font-black text-foreground mb-12 tracking-tighter uppercase leading-none">
+          <h2 className="text-5xl 2xl:text-7xl font-black text-foreground mb-8 tracking-tighter uppercase leading-none">
             THRYVE<br />
-            <span className="text-reveal text-5xl block mt-2">ACCÈS</span>
+            <span className="text-reveal text-3xl 2xl:text-5xl block mt-2">ACCÈS</span>
           </h2>
-          <p className="text-foreground/40 text-xs font-black uppercase tracking-[0.4em] leading-relaxed mb-16">
+          <p className="text-foreground/40 text-[10px] font-black uppercase tracking-[0.4em] leading-relaxed mb-12">
             ENTREZ DANS L'ÈRE DU MULTI-RÉSEAUX OPTIMISÉ AVEC THRYVE.
           </p>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {[
               { value: '12K+', label: 'SYNCHRO ALPHA' },
               { value: '2.4M+', label: 'PORTÉE TOTALE' },
               { value: '4.9/5', label: 'OPTIMISATION' },
             ].map(({ value, label }) => (
-              <div key={label} className="glass-master px-10 py-8 rounded-[2.5rem] border-white/50 shadow-sm transition-transform hover:scale-105 group cursor-default">
-                <p className="text-5xl font-black text-foreground tracking-tighter leading-none group-hover:text-primary transition-colors">{value}</p>
-                <p className="text-[9px] text-foreground/30 font-black uppercase tracking-[0.5em] mt-3">{label}</p>
+              <div key={label} className="glass-master px-8 py-6 2xl:px-10 2xl:py-8 rounded-[2.5rem] border-white/50 shadow-sm transition-transform hover:scale-105 group cursor-default">
+                <p className="text-4xl 2xl:text-5xl font-black text-foreground tracking-tighter leading-none group-hover:text-primary transition-colors">{value}</p>
+                <p className="text-[8px] 2xl:text-[9px] text-foreground/30 font-black uppercase tracking-[0.5em] mt-3">{label}</p>
               </div>
             ))}
           </div>

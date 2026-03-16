@@ -81,7 +81,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl sm:text-6xl lg:text-[64px] font-extrabold text-foreground leading-[1.08] tracking-tight mb-6"
+              className="text-5xl sm:text-6xl lg:text-[68px] font-extrabold text-foreground leading-[1.05] tracking-tight mb-6"
             >
               Thryve —<br />
               <span
@@ -92,10 +92,10 @@ function HeroSection() {
                   backgroundClip: 'text',
                 }}
               >
-                Grow your social
+                Rayonnez sur
               </span>
               <br />
-              presence effortlessly
+              tous vos réseaux
             </motion.h1>
 
             {/* Subtitle */}
@@ -103,9 +103,9 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg"
+              className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-lg"
             >
-              Plan, create and manage your Instagram and Threads content from one powerful platform. Built for creators who want to grow without the hustle.
+              Planifiez, créez et gérez votre contenu Instagram et Threads depuis une plateforme unique et puissante. Conçue pour les créateurs qui visent l'excellence sans la complexité.
             </motion.p>
 
             {/* CTAs */}
@@ -118,23 +118,23 @@ function HeroSection() {
               <Link to={ROUTE_PATHS.REGISTER}>
                 <Button
                   size="lg"
-                  className="font-bold text-base px-8 py-6 rounded-2xl shadow-lg"
+                  className="font-bold text-base px-10 py-7 rounded-2xl shadow-lg"
                   style={{
                     background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)',
                     boxShadow: '0 8px 30px rgba(79,70,229,0.3)',
                   }}
                 >
-                  Get Started — Free
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  Commencer — Gratuit
+                  <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Button
                 variant="outline"
                 size="lg"
-                className="font-semibold text-base px-8 py-6 rounded-2xl border-2"
+                className="font-bold text-base px-10 py-7 rounded-2xl border-2 hover:bg-muted/50 transition-all"
               >
-                <Play className="mr-2 w-4 h-4 fill-current" />
-                View Demo
+                <Play className="mr-3 w-4 h-4 fill-current" />
+                Démo Vidéo
               </Button>
             </motion.div>
 
@@ -560,11 +560,6 @@ function TestimonialCard({ name, role, content, avatar, index }: any) {
 // ─── Pricing (Choosing Destiny) ──────────────────────────────
 function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
-  const plans = [
-    { id: 'origin', name: 'ORIGIN', price: 0, features: ['1 Compte Social', '15 Posts / mois', 'Basic Stats', 'Community Support'] },
-    { id: 'dominion', name: 'DOMINION', price: 29, features: ['5 Comptes Sociaux', 'Post Illimités', 'IA Full Access', '24/7 Priority', 'Threads Pro'], popular: true },
-    { id: 'universe', name: 'UNIVERSE', price: 99, features: ['20 Comptes Sociaux', 'Multi-User Nexus', 'White-Label Reports', 'API Mastery', 'Dedicated Lead'] }
-  ];
 
   return (
     <section id="pricing" className="py-24 bg-muted/20">
@@ -640,7 +635,7 @@ function PricingCard({ plan, yearly, index }: any) {
         <span className="text-7xl font-black tracking-tighter text-foreground decoration-primary underline underline-offset-[12px]">
           {yearly ? plan.priceYearly : plan.priceMonthly}€
         </span>
-        <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest italic">/ MOIS TRANSMISSION</span>
+        <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest italic">/ TRANSMISSION MENSUELLE</span>
       </div>
       <ul className="space-y-8 mb-20 flex-1 relative z-10">
         {plan.features.map((f: string) => (
