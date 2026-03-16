@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Instagram, MessageSquare, Globe, Plus, X, Image, Video,
   Sparkles, Smile, Hash, Send, Calendar, CheckCircle2, Save,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { DashboardLayout } from '@/components/Layout';
-import { ROUTE_PATHS, type MediaFile } from '@/lib/index';
+import { ROUTE_PATHS, type MediaFile, type SocialAccount } from '@/lib/index';
 import { MOCK_ACCOUNTS } from '@/data/index';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
@@ -140,6 +140,20 @@ export default function CreatePost() {
   const [selectedMediaUrls, setSelectedMediaUrls] = useState<string[]>([]);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [mediaSearch, setMediaSearch] = useState('');
+  const [accounts, setAccounts] = useState<SocialAccount[]>([]);
+  const [loadingAccounts, setLoadingAccounts] = useState(true);
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      setLoadingAccounts(true);
+      const { data, error } = await supabase.from('social_accounts').select('*');
+      if (!error && data) {
+        setAccounts(data as SocialAccount[]);
+      }
+      setLoadingAccounts(false);
+    };
+    fetchAccounts();
+  }, [user]);
 
   useEffect(() => {
     const fetchLibrary = async () => {
@@ -664,7 +678,7 @@ export default function CreatePost() {
                 {loadingAccounts ? (
                   <div className="py-10 text-center text-[10px] font-black uppercase tracking-widest text-foreground/20 italic">Initialisation Nexus...</div>
                 ) : accounts.length > 0 ? (
-                  accounts.map((account) => (
+                  accounts.map((account: SocialAccount) => (
                     <button
                       key={account.id}
                       onClick={() => toggleAccount(account.id)}

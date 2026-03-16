@@ -2,7 +2,7 @@
 // THRYVE — Analytics Page
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   TrendingUp, Heart, MessageCircle, Eye, Users, BarChart3,
@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { DashboardLayout } from '@/components/Layout';
 import { StatCard } from '@/components/Cards';
 import { MOCK_ANALYTICS_DATA, MOCK_ANALYTICS_SUMMARY, MOCK_POSTS } from '@/data/index';
-import { formatNumber } from '@/lib/index';
+import { formatNumber, type Post } from '@/lib/index';
+import { supabase } from '@/lib/supabase';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend,
@@ -134,8 +135,15 @@ export default function Analytics() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState('30d');
 
-  React.useEffect(() => {
+  const rangeOptions = [
+    { value: '7d', label: '7 JOURS' },
+    { value: '30d', label: '30 JOURS' },
+    { value: 'all', label: 'TOTAL' },
+  ];
+
+  useEffect(() => {
     const fetchData = async () => {
       const [p, a] = await Promise.all([
         supabase.from('posts').select('*'),
@@ -187,7 +195,7 @@ export default function Analytics() {
           <div className="flex items-center gap-6">
             {/* Range toggle */}
             <div className="flex items-center glass-master p-1.5 rounded-2xl border-white/40 shadow-inner">
-              {rangeOptions.map(({ value, label }) => (
+              {rangeOptions.map(({ value, label }: { value: string; label: string }) => (
                 <button
                   key={value}
                   onClick={() => setRange(value)}
@@ -331,4 +339,3 @@ export default function Analytics() {
     </DashboardLayout>
   );
 }
-```
