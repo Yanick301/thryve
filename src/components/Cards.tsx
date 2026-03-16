@@ -1,10 +1,10 @@
 // ============================================================
-// THRYVE — Reusable Cards (Feature, Pricing, Testimonial, Stat)
+// THRYVE — Reusable Cards (Mastery 2.0 Edition)
 // ============================================================
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, Star, TrendingUp, TrendingDown } from 'lucide-react';
+import { Check, Star, TrendingUp, TrendingDown, Sparkles } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,7 @@ import { formatNumber, getGrowthColor, getGrowthPrefix } from '@/lib/index';
 import { Link } from 'react-router-dom';
 import { ROUTE_PATHS } from '@/lib/index';
 
-// ─── Feature Card ─────────────────────────────────────────────
+// ─── Feature Card (Alpha Edition) ─────────────────────────────
 interface FeatureCardProps {
   icon: string;
   title: string;
@@ -24,41 +24,37 @@ interface FeatureCardProps {
 }
 
 export function FeatureCard({ icon, title, description, color, index }: FeatureCardProps) {
-  // Dynamically get Lucide icon
   const LucideIcon = (Icons as unknown as Record<string, React.ElementType>)[icon] || Icons.Sparkles;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group relative bg-card rounded-2xl p-6 border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer"
-      style={{
-        boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)',
-      }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -12, scale: 1.02 }}
+      className="group relative glass-master p-10 rounded-[3rem] border border-white/5 hover:border-iridescent transition-all duration-700 cursor-pointer overflow-hidden"
     >
-      {/* Icon */}
-      <div
-        className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-        style={{ backgroundColor: `${color}15` }}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      
+      {/* Icon Wrapper */}
+      <div 
+        className="w-20 h-20 rounded-[1.5rem] flex items-center justify-center mb-8 bg-white/5 group-hover:bg-white/10 transition-colors shadow-2xl"
+        style={{ color }}
       >
-        <LucideIcon size={22} style={{ color }} />
+        <LucideIcon size={40} strokeWidth={1.5} />
       </div>
 
-      <h3 className="text-base font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      <h3 className="text-2xl font-black text-white mb-4 tracking-tighter uppercase">{title}</h3>
+      <p className="text-white/40 text-lg leading-relaxed font-medium group-hover:text-white/60 transition-colors">{description}</p>
 
-      {/* Gradient accent line on hover */}
-      <div
-        className="absolute bottom-0 left-6 right-6 h-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{ background: `linear-gradient(90deg, ${color}, transparent)` }}
-      />
+      {/* Iridescent Accent Line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-iris-teal to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
     </motion.div>
   );
 }
 
-// ─── Stat Card ────────────────────────────────────────────────
+// ─── Stat Card (Nexus Edition) ────────────────────────────────
 interface StatCardProps {
   label: string;
   value: string | number;
@@ -68,47 +64,57 @@ interface StatCardProps {
   index?: number;
 }
 
-export function StatCard({ label, value, growth, icon: Icon, iconColor = '#4F46E5', index = 0 }: StatCardProps) {
+export function StatCard({ label, value, growth, icon: Icon, iconColor = '#8b5cf6', index = 0 }: StatCardProps) {
   const isPositive = growth !== undefined && growth >= 0;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.07 }}
-      className="bg-card rounded-2xl p-5 border border-border"
-      style={{ boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)' }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ scale: 1.05 }}
+      className="glass-master p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
     >
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center"
-          style={{ backgroundColor: `${iconColor}12` }}
+      <div className="flex items-center justify-between mb-8 relative z-10">
+        <p className="text-xs font-black text-white/40 uppercase tracking-[0.3em]">{label}</p>
+        <div 
+          className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 shadow-inner"
+          style={{ color: iconColor }}
         >
-          <Icon size={17} style={{ color: iconColor }} />
+          <Icon size={24} />
         </div>
       </div>
 
-      <p className="text-2xl font-bold text-foreground mb-1">{typeof value === 'number' ? formatNumber(value) : value}</p>
+      <div className="relative z-10">
+        <p className="text-5xl font-black text-white mb-4 tracking-tighter">
+          {typeof value === 'number' ? formatNumber(value) : value}
+        </p>
 
-      {growth !== undefined && (
-        <div className="flex items-center gap-1">
-          {isPositive ? (
-            <TrendingUp className="w-3.5 h-3.5 text-accent" />
-          ) : (
-            <TrendingDown className="w-3.5 h-3.5 text-destructive" />
-          )}
-          <span className={`text-xs font-semibold ${getGrowthColor(growth)}`}>
-            {getGrowthPrefix(growth)}{growth}%
-          </span>
-          <span className="text-xs text-muted-foreground">vs mois dernier</span>
-        </div>
-      )}
+        {growth !== undefined && (
+          <div className="flex items-center gap-2 glass-master px-3 py-1.5 rounded-xl border-white/5 inline-flex">
+            {isPositive ? (
+              <TrendingUp className="w-4 h-4 text-iris-teal" />
+            ) : (
+              <TrendingDown className="w-4 h-4 text-destructive" />
+            )}
+            <span className={`text-sm font-black ${isPositive ? 'text-iris-teal' : 'text-destructive'}`}>
+              {getGrowthPrefix(growth)}{growth}%
+            </span>
+            <span className="text-[10px] text-white/30 font-bold uppercase">vs mo.</span>
+          </div>
+        )}
+      </div>
+
+      {/* Decorative Glow */}
+      <div 
+        className="absolute -bottom-10 -right-10 w-32 h-32 blur-[60px] opacity-20"
+        style={{ backgroundColor: iconColor }}
+      />
     </motion.div>
   );
 }
 
-// ─── Pricing Card ─────────────────────────────────────────────
+// ─── Pricing Card (Mastery Edition) ───────────────────────────
 interface PricingCardProps {
   plan: PricingPlan;
   yearly: boolean;
@@ -120,85 +126,75 @@ export function PricingCard({ plan, yearly, index }: PricingCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`relative flex flex-col rounded-3xl p-8 border transition-all duration-300 ${
+      transition={{ duration: 0.8, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -10 }}
+      className={`relative flex flex-col rounded-[3.5rem] p-12 border transition-all duration-700 ${
         plan.highlighted
-          ? 'border-primary shadow-xl'
-          : 'border-border bg-card hover:border-primary/30 hover:shadow-lg'
+          ? 'border-iridescent shadow-[0_40px_100px_-20px_rgba(109,40,217,0.3)] z-10'
+          : 'border-white/5 glass-master hover:border-white/20'
       }`}
-      style={
-        plan.highlighted
-          ? {
-              background: 'linear-gradient(145deg, #4F46E5 0%, #14B8A6 100%)',
-            }
-          : { boxShadow: '0 4px 20px -6px rgba(0,0,0,0.08)' }
-      }
     >
       {plan.badge && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-          <span className="bg-foreground text-background text-xs font-bold px-4 py-1.5 rounded-full whitespace-nowrap shadow-lg">
-            {plan.badge}
-          </span>
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] px-8 py-2 rounded-full shadow-2xl">
+          {plan.badge}
         </div>
       )}
 
-      <div className={`mb-6 ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>
-        <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-        <p className={`text-sm ${plan.highlighted ? 'text-white/70' : 'text-muted-foreground'}`}>
+      <div className="mb-10 text-center">
+        <h3 className="text-3xl font-black text-white mb-2 tracking-tighter uppercase">{plan.name}</h3>
+        <p className="text-white/40 text-sm font-medium tracking-tight h-10">
           {plan.description}
         </p>
       </div>
 
-      <div className={`mb-8 ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>
-        <div className="flex items-end gap-1">
-          <span className="text-4xl font-extrabold">{price === 0 ? 'Gratuit' : `${price}€`}</span>
-          {price > 0 && (
-            <span className={`text-sm mb-1 ${plan.highlighted ? 'text-white/60' : 'text-muted-foreground'}`}>
-              /mois
-            </span>
-          )}
+      <div className="mb-12 text-center relative">
+        <div className="flex items-baseline justify-center gap-1">
+          <span className="text-7xl font-black text-white tracking-tighter">
+            {price === 0 ? 'FREE' : `${price}€`}
+          </span>
+          {price > 0 && <span className="text-sm text-white/30 font-black uppercase tracking-widest">/mois</span>}
         </div>
         {yearly && price > 0 && (
-          <p className={`text-xs mt-1 ${plan.highlighted ? 'text-white/70' : 'text-accent font-medium'}`}>
-            Facturé annuellement — Économisez {Math.round(((plan.price - price) / plan.price) * 100)}%
+          <p className="text-xs mt-4 text-iris-teal font-black uppercase tracking-widest">
+            Fidélité Annuelle active
           </p>
+        )}
+        {plan.highlighted && (
+          <div className="absolute -inset-x-4 top-1/2 -translate-y-1/2 h-16 bg-primary/20 blur-[60px] -z-10" />
         )}
       </div>
 
-      <ul className="space-y-3 mb-8 flex-1">
+      <ul className="space-y-6 mb-16 flex-1">
         {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3">
-            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-              plan.highlighted ? 'bg-white/20' : 'bg-primary/10'
-            }`}>
-              <Check className={`w-3 h-3 ${plan.highlighted ? 'text-white' : 'text-primary'}`} />
+          <li key={feature} className="flex items-start gap-4">
+            <div className="w-6 h-6 rounded-full glass-master flex items-center justify-center border-white/10 shrink-0 mt-0.5">
+              <Check className="w-3.5 h-3.5 text-iris-teal" />
             </div>
-            <span className={`text-sm ${plan.highlighted ? 'text-white/90' : 'text-foreground'}`}>
-              {feature}
-            </span>
+            <span className="text-lg font-bold text-white/80 leading-snug">{feature}</span>
           </li>
         ))}
       </ul>
 
       <Link to={ROUTE_PATHS.REGISTER}>
         <Button
-          className={`w-full font-semibold rounded-xl py-5 transition-all duration-200 ${
+          size="lg"
+          className={`w-full py-10 rounded-[2rem] font-black uppercase tracking-[0.2em] text-lg transition-all duration-500 hover:scale-105 active:scale-95 ${
             plan.highlighted
-              ? 'bg-white text-primary hover:bg-white/90 shadow-lg'
-              : 'bg-primary text-primary-foreground hover:opacity-90'
+              ? 'bg-white text-black shadow-2xl hover:bg-white/90'
+              : 'glass-master border-white/10 hover:bg-white/5 text-white'
           }`}
         >
-          {plan.id === 'free' ? 'Commencer gratuitement' : 'Démarrer l\'essai gratuit'}
+          {plan.id === 'free' ? 'Démarrer' : 'Lancer ascension'}
         </Button>
       </Link>
     </motion.div>
   );
 }
 
-// ─── Testimonial Card ─────────────────────────────────────────
+// ─── Testimonial Card (High Fidelity) ─────────────────────────
 interface TestimonialCardProps {
   name: string;
   role: string;
@@ -212,34 +208,38 @@ interface TestimonialCardProps {
 export function TestimonialCard({ name, role, avatar, text, followers, rating, index }: TestimonialCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-card rounded-2xl p-6 border border-border"
-      style={{ boxShadow: '0 4px 20px -6px rgba(0,0,0,0.08)' }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-master p-12 rounded-[3.5rem] border border-white/5 relative group"
     >
-      {/* Stars */}
-      <div className="flex gap-0.5 mb-4">
-        {Array.from({ length: rating }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+      <div className="flex gap-1 mb-8">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star 
+            key={i} 
+            size={18} 
+            className={`${i < rating ? 'text-iris-teal fill-iris-teal' : 'text-white/10'}`} 
+          />
         ))}
       </div>
 
-      {/* Quote */}
-      <p className="text-sm text-foreground leading-relaxed mb-5">"{text}"</p>
+      <p className="text-xl text-white/70 italic leading-relaxed mb-10 font-medium group-hover:text-white transition-colors">
+        "{text}"
+      </p>
 
-      {/* Author */}
-      <div className="flex items-center gap-3">
-        <Avatar className="w-10 h-10">
+      <div className="flex items-center gap-5">
+        <Avatar className="w-16 h-16 border-2 border-white/10">
           <AvatarImage src={avatar} />
-          <AvatarFallback className="text-xs font-semibold bg-primary/10 text-primary">
+          <AvatarFallback className="bg-iris-purple/20 text-iris-purple font-black">
             {name.split(' ').map((n) => n[0]).join('')}
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="text-sm font-semibold text-foreground">{name}</p>
-          <p className="text-xs text-muted-foreground">{role} · {followers} abonnés</p>
+          <h4 className="font-black text-white text-xl tracking-tight leading-none mb-1">{name}</h4>
+          <p className="text-xs text-white/40 font-black uppercase tracking-widest">
+            {role} <span className="text-white/10 mx-2">|</span> {followers}
+          </p>
         </div>
       </div>
     </motion.div>
@@ -253,20 +253,21 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   const map = {
-    draft: { label: 'Brouillon', className: 'bg-muted text-muted-foreground' },
-    scheduled: { label: 'Programmé', className: 'bg-primary/10 text-primary' },
-    published: { label: 'Publié', className: 'bg-accent/10 text-accent' },
-    failed: { label: 'Échec', className: 'bg-destructive/10 text-destructive' },
+    draft: { label: 'BROUILLON', color: 'gray' },
+    scheduled: { label: 'PLANIFIÉ', color: 'iris-purple' },
+    published: { label: 'PROPAGÉ', color: 'iris-teal' },
+    failed: { label: 'INTERROMPU', color: 'destructive' },
   };
-  const { label, className } = map[status];
+  const { label, color } = map[status];
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${className}`}>
+    <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-[0.2em] border border-white/5 glass-master uppercase`}>
+      <span className={`w-1.5 h-1.5 rounded-full inline-block mr-2 bg-current`} style={{ color: color === 'destructive' ? 'red' : color }} />
       {label}
     </span>
   );
 }
 
-// ─── Platform Badge ───────────────────────────────────────────
+// ─── Platform Badge (Mastery) ─────────────────────────────────
 interface PlatformBadgeProps {
   platform: 'instagram' | 'threads' | 'both';
   size?: 'sm' | 'md';
@@ -274,18 +275,19 @@ interface PlatformBadgeProps {
 
 export function PlatformBadge({ platform, size = 'sm' }: PlatformBadgeProps) {
   const map = {
-    instagram: { label: 'Instagram', color: '#E1306C' },
-    threads: { label: 'Threads', color: '#000000' },
-    both: { label: 'IG + Threads', color: '#4F46E5' },
+    instagram: { label: 'INSTAGRAM', icon: Icons.Instagram, color: '#E1306C' },
+    threads: { label: 'THREADS', icon: Icons.AtSign, color: '#FFFFFF' },
+    both: { label: 'NEXUS FLOW', icon: Sparkles, color: '#8b5cf6' },
   };
-  const { label, color } = map[platform];
-  const sizeClass = size === 'sm' ? 'text-xs px-2 py-0.5' : 'text-sm px-3 py-1';
+  const { label, icon: Icon, color } = map[platform];
+  const sizeClass = size === 'sm' ? 'text-[10px] px-3 py-1' : 'text-xs px-5 py-2';
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-semibold ${sizeClass}`}
-      style={{ backgroundColor: `${color}15`, color }}
+      className={`inline-flex items-center gap-2 rounded-full font-black tracking-widest ${sizeClass} border border-white/5 glass-master`}
+      style={{ color }}
     >
+      <Icon size={size === 'sm' ? 12 : 16} />
       {label}
     </span>
   );
@@ -301,12 +303,12 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-        <Icon className="w-7 h-7 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center py-32 text-center">
+      <div className="w-24 h-24 rounded-[2rem] glass-master border-white/5 flex items-center justify-center mb-10 animate-pulse">
+        <Icon size={40} className="text-white/20" />
       </div>
-      <h3 className="text-base font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-xs leading-relaxed mb-5">{description}</p>
+      <h3 className="text-3xl font-black text-white mb-4 tracking-tighter uppercase">{title}</h3>
+      <p className="text-white/40 text-lg max-w-sm leading-relaxed font-medium mb-12">{description}</p>
       {action && (
         <Button onClick={action.onClick} size="sm" className="font-medium">
           {action.label}

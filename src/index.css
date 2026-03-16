@@ -209,3 +209,147 @@
     @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
   }
 }
+/* ============================================================
+   ULTRA-PREMIUM DESIGN SYSTEM (MASTERY 2.0)
+   ============================================================ */
+
+:root {
+  /* Deep Space Theme - Enhanced */
+  --space-void: #020617;
+  --space-stellar: #0f172a;
+  --space-accent: #6d28d9;
+  --space-glow: rgba(109, 40, 217, 0.4);
+  
+  /* Iridescent Accents - Refined */
+  --iris-purple: #8b5cf6;
+  --iris-teal: #14b8a6;
+  --iris-blue: #3b82f6;
+  --iris-pink: #ec4899;
+}
+
+/* Glassmorphism 3.0 - Next Level Depth */
+.glass-master {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-master::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.02;
+  pointer-events: none;
+}
+
+.glass-master-dark {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Iridescent Text & Borders - Refined */
+.text-iridescent {
+  background: linear-gradient(
+    135deg, 
+    #ffffff 20%, 
+    #c4b5fd 40%, 
+    #2dd4bf 60%, 
+    #ffffff 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+.border-iridescent {
+  position: relative;
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--space-void), var(--space-void)), 
+                    linear-gradient(135deg, var(--iris-purple), var(--iris-teal), var(--iris-blue));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* Animations - Ultra Smooth */
+@keyframes mesh-float {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33% { transform: translate(2%, 2%) rotate(2deg) scale(1.05); }
+  66% { transform: translate(-1%, 4%) rotate(-1deg) scale(0.95); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; filter: blur(40px) saturate(100%); transform: scale(1); }
+  50% { opacity: 0.6; filter: blur(80px) saturate(150%); transform: scale(1.1); }
+}
+
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+
+.animate-mesh {
+  animation: mesh-float 25s infinite ease-in-out;
+}
+
+.animate-glow {
+  animation: pulse-glow 12s infinite ease-in-out;
+}
+
+/* Luxury Background Elements */
+.bg-vignette {
+  background: radial-gradient(circle at center, transparent 0%, rgba(2, 6, 23, 0.8) 100%);
+}
+
+.bg-grid-white {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar - Minimal High-End */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--space-void);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--iris-purple);
+}
+
+/* Video Background Support */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(2, 6, 23, 0.4), rgba(2, 6, 23, 0.9));
+  z-index: 10;
+}
+
+.full-screen-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  opacity: 0.5;
+}
