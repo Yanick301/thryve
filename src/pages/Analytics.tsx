@@ -39,9 +39,8 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
 }
 
 // ─── Top Posts Table ──────────────────────────────────────────
-function TopPostsTable() {
-  const publishedPosts = MOCK_POSTS.filter((p) => p.status === 'published');
-
+function TopPostsTable({ posts }: { posts: Post[] }) {
+  const publishedPosts = posts.filter((p) => p.status === 'published').sort((a,b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
   return (
     <div className="glass-master rounded-[3rem] border border-white/40 overflow-hidden shadow-2xl relative">
        <div className="absolute inset-0 bg-primary/5 -z-10" />
@@ -132,20 +131,34 @@ function PlatformDistribution() {
 
 // ─── Main Analytics Page ──────────────────────────────────────
 export default function Analytics() {
-  const [range, setRange] = useState<RangeType>('30d');
-  const summary = MOCK_ANALYTICS_SUMMARY;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const rangeOptions: { value: RangeType; label: string }[] = [
-    { value: '7d', label: '7 JOURS' },
-    { value: '30d', label: '30 JOURS' },
-    { value: '90d', label: '90 JOURS' },
-  ];
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const [p, a] = await Promise.all([
+        supabase.from('posts').select('*'),
+        supabase.from('social_accounts').select('*')
+      ]);
+      if (p.data) setPosts(p.data as Post[]);
+      if (a.data) setAccounts(a.data);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const totalLikes = posts.reduce((sum, p) => sum + (p.likes || 0), 0);
+  const totalComments = posts.reduce((sum, p) => sum + (p.comments || 0), 0);
+  const totalReach = posts.reduce((sum, p) => sum + (p.reach || 0), 0);
+  const totalFollowers = accounts.reduce((sum, a) => sum + (a.followers || 0), 0);
+  const avgEngagement = totalReach > 0 ? (((totalLikes + totalComments) / totalReach) * 100).toFixed(1) : '0.0';
 
   const stats = [
-    { label: 'OPÉRATEURS REJOINTS', value: summary.totalFollowers, growth: summary.followerGrowth, icon: Users, iconColor: 'var(--primary)' },
-    { label: 'RÉACTIONS ALPHA', value: summary.totalLikes, growth: summary.likesGrowth, icon: Heart, iconColor: '#F43F5E' },
-    { label: 'ECHO TRANSMISSIONS', value: summary.totalComments, growth: summary.commentsGrowth, icon: MessageCircle, iconColor: '#14B8A6' },
-    { label: 'RAYONNEMENT SIGNAL', value: summary.totalReach, growth: summary.reachGrowth, icon: Eye, iconColor: '#F59E0B' },
+    { label: 'AUDIENCE TOTALE', value: totalFollowers, growth: 0, icon: Users, iconColor: 'var(--primary)' },
+    { label: 'RÉACTIONS ACCUMULÉES', value: totalLikes, growth: 0, icon: Heart, iconColor: '#F43F5E' },
+    { label: 'ÉCHOS TRANSMISSIONS', value: totalComments, growth: 0, icon: MessageCircle, iconColor: '#14B8A6' },
+    { label: 'PORTÉE DU SIGNAL', value: totalReach, growth: 0, icon: Eye, iconColor: '#F59E0B' },
   ];
 
   const formatXAxis = (dateStr: string) =>
@@ -214,10 +227,10 @@ export default function Analytics() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
             <div>
               <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.6em] mb-4">INTENSITÉ D'ENGAGEMENT MOYENNE</p>
-              <p className="text-8xl font-black tracking-tighter leading-none mb-6">{summary.avgEngagement}<span className="text-4xl ml-2">%</span></p>
+              <p className="text-8xl font-black tracking-tighter leading-none mb-6">{avgEngagement}<span className="text-4xl ml-2">%</span></p>
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 w-fit">
                 <TrendingUp className="w-5 h-5 text-accent animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-widest">+{summary.engagementGrowth}% VS PÉRIODE ALPHA</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">SIGNAL ALPHA ACTIF</span>
               </div>
             </div>
             
@@ -312,9 +325,10 @@ export default function Analytics() {
 
         {/* Top Posts */}
         <div className="pt-8">
-          <TopPostsTable />
+          <TopPostsTable posts={posts} />
         </div>
       </div>
     </DashboardLayout>
   );
 }
+```

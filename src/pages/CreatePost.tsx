@@ -654,30 +654,41 @@ export default function CreatePost() {
                 <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">CANAUX D'ÉMISSION</h3>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {connectedAccounts.map((account) => (
-                  <button
-                    key={account.id}
-                    onClick={() => toggleAccount(account.id)}
-                    className={`flex items-center gap-6 p-8 rounded-[2.5rem] border transition-all duration-700 relative overflow-hidden group/acc
-                      ${selectedAccounts.has(account.id) ? 'border-primary bg-primary/5 shadow-2xl scale-[1.02]' : 'border-white/30 bg-white/5 hover:border-primary/40'}`}
-                  >
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-[10px] font-black flex-shrink-0 shadow-xl border border-white/20"
-                      style={{ background: account.platform === 'instagram' ? 'linear-gradient(135deg, #E1306C, #F56040)' : '#000' }}
+              <div className="space-y-4">
+                {loadingAccounts ? (
+                  <div className="py-10 text-center text-[10px] font-black uppercase tracking-widest text-foreground/20 italic">Initialisation Nexus...</div>
+                ) : accounts.length > 0 ? (
+                  accounts.map((account) => (
+                    <button
+                      key={account.id}
+                      onClick={() => toggleAccount(account.id)}
+                      className={`w-full flex items-center gap-6 p-6 rounded-[2rem] border transition-all duration-700 group
+                        ${selectedAccounts.includes(account.id) ? 'border-primary bg-primary/10 shadow-2xl' : 'border-white/20 glass-master hover:border-white/40'}`}
                     >
-                      {account.platform === 'instagram' ? 'IG' : 'TH'}
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-[11px] font-black text-foreground uppercase tracking-widest">{account.username}</p>
-                      <p className="text-[8px] text-foreground/30 font-black uppercase tracking-[0.2em] mt-1 underline-offset-4 decoration-primary">{account.followers.toLocaleString()} REACH</p>
-                    </div>
-                    <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all duration-700
-                      ${selectedAccounts.has(account.id) ? 'bg-primary border-primary rotate-0 scale-110 shadow-lg' : 'border-white/20 rotate-45 group-hover/acc:rotate-0'}`}>
-                      {selectedAccounts.has(account.id) && <CheckCircle2 className="w-5 h-5 text-white" />}
-                    </div>
-                  </button>
-                ))}
+                      <div
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xl transition-all duration-700 group-hover:scale-110"
+                        style={{ background: account.platform === 'instagram' ? 'linear-gradient(135deg, #E1306C, #F56040)' : '#000' }}
+                      >
+                        {account.platform === 'instagram' ? <Instagram className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
+                      </div>
+                      <div className="text-left flex-1 min-w-0">
+                        <p className="font-black text-foreground tracking-tighter truncate uppercase">{account.username}</p>
+                        <p className="text-[9px] text-foreground/40 font-black uppercase tracking-[0.2em] mt-1 italic">{account.followers.toLocaleString()} UNITÉS REACH</p>
+                      </div>
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-500
+                        ${selectedAccounts.includes(account.id) ? 'bg-primary border-primary scale-110 shadow-[0_0_20px_rgba(79,70,229,0.4)]' : 'border-white/20 h-4 w-4'}`}>
+                        {selectedAccounts.includes(account.id) && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  <div className="py-10 text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 italic">Aucune unité de diffusion active</p>
+                    <Link to={ROUTE_PATHS.ACCOUNTS}>
+                        <Button variant="ghost" className="mt-4 text-[9px] font-black uppercase tracking-widest text-primary hover:bg-primary/5">Synchroniser un compte →</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
 

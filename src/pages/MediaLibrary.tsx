@@ -295,7 +295,7 @@ export default function MediaLibrary() {
               MEDIA<br /><span className="text-reveal">NEXUS</span>
             </h1>
             <p className="text-[10px] text-foreground/40 mt-6 font-black uppercase tracking-[0.6em]">
-              {loading ? 'CALCUL EN COURS...' : `${media.length} ALPHA UNITS · ${MOCK_FOLDERS.reduce((a, f) => a + f.count, 0)} SECTEURS SYNC`}
+              {loading ? 'CALCUL EN COURS...' : `${media.length} UNITÉS MÉDIAS SYNCHRONISÉES`}
             </p>
           </div>
           <Button
@@ -335,14 +335,7 @@ export default function MediaLibrary() {
               </button>
 
               <div className="space-y-1.5">
-                {MOCK_FOLDERS.map((folder) => (
-                  <FolderCard
-                    key={folder.id}
-                    folder={folder}
-                    active={selectedFolder === folder.id}
-                    onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
-                  />
-                ))}
+                {/* Real folders can be implemented later by grouping media categories */}
               </div>
             </div>
           </div>
