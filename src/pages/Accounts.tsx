@@ -11,12 +11,14 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DashboardLayout } from '@/components/Layout';
-import { formatNumber, formatDateTime } from '@/lib/index';
+import { formatNumber, formatDateTime, ROUTE_PATHS } from '@/lib/index';
 import { MOCK_ACCOUNTS } from '@/data/index';
 import type { SocialAccount } from '@/lib/index';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
+import { automationService } from '@/services/automation';
+import { toast } from '@/hooks/use-toast';
 
 // ─── Account Card Nexus ─────────────────────────────────────────────
 function AccountCard({ account, onDisconnect, onSync }: {
@@ -161,18 +163,39 @@ function ConnectModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
     if (!selectedPlatform || !username || !password || !user) return;
     setStep('connecting');
     
-    // Save to Supabase
+    // 1. Verify with Automation Server
+    const verifyRes = await automationService.verifyAccount({
+       platform: selectedPlatform,
+       username,
+       passwordLegacy: password,
+    });
+
+    if (!verifyRes.success) {
+      toast({
+        title: "Échec d'Authentification",
+        description: `Le terminal ${selectedPlatform.toUpperCase()} a rejeté les identifiants.`,
+        variant: "destructive"
+      });
+      setStep('credentials');
+      return;
+    }
+
+    // 2. Save to Supabase
     const { error } = await supabase.from('social_accounts').insert([
       {
         user_id: user.id,
         platform: selectedPlatform,
         username,
-        password_encrypted: password, // In a real app, encrypt this
+        password_encrypted: password, 
       }
     ]);
 
     if (error) {
-      alert(`Erreur: ${error.message}`);
+      toast({
+        title: "Erreur Base de Données",
+        description: error.message,
+        variant: "destructive"
+      });
       setStep('credentials');
       return;
     }

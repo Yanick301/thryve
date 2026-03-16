@@ -109,5 +109,25 @@ export const automationService = {
     } catch (error: any) {
       return { success: false, error: error.message };
     }
+  },
+
+  /**
+   * Verify account credentials by attempting a login on the automation server
+   */
+  async verifyAccount(data: {
+    platform: 'instagram' | 'threads';
+    username: string;
+    passwordLegacy?: string;
+  }): Promise<AutomationResponse> {
+    try {
+      const response = await fetch(`${AUTOMATION_API_URL}/api/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
   }
 };

@@ -132,7 +132,7 @@ export default function CreatePost() {
   const [scheduleType, setScheduleType] = useState<ScheduleType>('now');
   const [scheduleDate, setScheduleDate] = useState('');
   const [scheduleTime, setScheduleTime] = useState('');
-  const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set(['a1']));
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -172,12 +172,9 @@ export default function CreatePost() {
   const removeHashtag = (tag: string) => setHashtags(hashtags.filter((h) => h !== tag));
 
   const toggleAccount = (id: string) => {
-    setSelectedAccounts((prev: Set<string>) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    setSelectedAccounts((prev) => 
+      prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]
+    );
   };
 
   const handlePublish = async () => {
@@ -287,10 +284,10 @@ export default function CreatePost() {
       user_id: user.id,
       caption,
       hashtags,
-      media_urls: [] as string[],
+      media_urls: selectedMediaUrls,
       platform,
       status: 'draft',
-      account_id: Array.from(selectedAccounts)[0] || null,
+      account_id: selectedAccounts[0] || null,
     };
 
     const { error } = await supabase.from('posts').insert([draftData]);
@@ -298,7 +295,16 @@ export default function CreatePost() {
     setSaving(false);
     
     if (error) {
-      alert(`Erreur lors de l'enregistrement : ${error.message}`);
+      toast({
+        title: "Échec de l'archivage",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Brouillon sauvegardé",
+        description: "Votre signal a été archivé dans le Nexus.",
+      });
     }
   };
 
@@ -710,12 +716,12 @@ export default function CreatePost() {
               <Button
                 className="flex-1 rounded-[2.5rem] py-12 bg-primary text-white font-black uppercase tracking-[0.6em] text-[10px] shadow-[0_20px_60px_rgba(79,70,229,0.4)] hover:scale-105 active:scale-95 transition-all duration-700 border-none group/send"
                 onClick={handlePublish}
-                disabled={publishing || selectedAccounts.size === 0}
+                disabled={publishing || selectedAccounts.length === 0}
               >
                 {publishing ? (
                   <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin mr-4" />
                 ) : (
-                  <Send className="mr-4 w-6 h-6 group-hover/send:translate-x-2 group-hover/send:-translate-y-2 transition-transform duration-500" />
+                  <Send className="mr-4 w-6 h-6 group-hover/send:translate-x-2 group-hover/send:-y-2 transition-transform duration-500" />
                 )}
                 {scheduleType === 'now' ? 'LANCER DIFFUSION' : 'ACTIVER PROGRAMMATION'}
               </Button>

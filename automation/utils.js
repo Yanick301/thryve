@@ -1,3 +1,8 @@
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+
 /**
  * Common utilities for browser automation
  */
@@ -36,5 +41,33 @@ export const randomPause = async () => {
   } else if (chance > 0.95) {
     console.log('☕ Taking a coffee break...');
     await delay(10000, 5000);
+  }
+};
+/**
+ * Downloads a file from a URL to a temporary local path
+ * @param {string} url - The URL of the file to download
+ * @returns {Promise<string>} - The local path to the downloaded file
+ */
+export const downloadMedia = async (url) => {
+  try {
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'stream'
+    });
+
+    const fileName = `thryve_${Date.now()}_${path.basename(url.split('?')[0])}`;
+    const tempPath = path.join(os.tmpdir(), fileName);
+    const writer = fs.createWriteStream(tempPath);
+
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on('finish', () => resolve(tempPath));
+      writer.on('error', reject);
+    });
+  } catch (error) {
+    console.error('❌ Failed to download media:', error);
+    throw error;
   }
 };

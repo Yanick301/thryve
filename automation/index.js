@@ -8,6 +8,8 @@ import engagementManager from './engagementManager.js';
 import scrollManager from './scrollManager.js';
 import browserManager from './browserManager.js';
 
+import { downloadMedia } from './utils.js';
+
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,28 @@ app.use(express.json());
 // --- Routes ---
 
 /**
+ * Verify account credentials
+ * Body: { platform, username, password }
+ */
+app.post('/api/verify', async (req, res) => {
+  const { platform, username, password } = req.body;
+  console.log(`🔍 Verifying ${platform} account for ${username}...`);
+  
+  try {
+    let page;
+    if (platform === 'instagram') {
+      page = await instagramBot.login(username, password);
+    } else if (platform === 'threads') {
+      page = await threadsBot.login(username, password);
+    }
+    // If login didn't throw, it's successful
+    res.json({ success: true, message: 'Account verified successfully' });
+  } catch (error) {
+    res.status(401).json({ success: false, error: 'Authentication failed' });
+  }
+});
+
+/**
  * Trigger an Instagram post
  * Body: { username, password, caption, mediaUrls }
  */
@@ -27,20 +51,25 @@ app.post('/api/instagram/publish', async (req, res) => {
   const actualPassword = password || passwordLegacy;
   
   try {
+    // Download media if they are URLs
+    const localPaths = await Promise.all(
+      mediaUrls.map(url => url.startsWith('http') ? downloadMedia(url) : url)
+    );
+
     const page = await instagramBot.login(username, actualPassword);
     if (type === 'reel') {
       await postPublisher.publishReel(page, { 
         caption, 
-        mediaPath: mediaUrls[0] 
+        mediaPath: localPaths[0] 
       });
     } else if (type === 'story') {
       await postPublisher.publishStory(page, { 
-        mediaPath: mediaUrls[0] 
+        mediaPath: localPaths[0] 
       });
     } else {
       await postPublisher.publishPost(page, { 
         caption, 
-        mediaPaths: mediaUrls 
+        mediaPaths: localPaths 
       });
     }
     res.json({ success: true, message: `${type} published successfully` });
@@ -58,9 +87,12 @@ app.post('/api/threads/publish', async (req, res) => {
   const actualPassword = password || passwordLegacy;
 
   try {
+    const localPaths = await Promise.all(
+      mediaUrls.map(url => url.startsWith('http') ? downloadMedia(url) : url)
+    );
+
     const page = await threadsBot.login(username, actualPassword);
-    await postPublisher.publishToThreads(page, { text, mediaPaths: mediaUrls });
-    // await browserManager.close();
+    await postPublisher.publishToThreads(page, { text, mediaPaths: localPaths });
     res.json({ success: true, message: 'Thread published successfully' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
