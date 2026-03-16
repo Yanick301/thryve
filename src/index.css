@@ -40,7 +40,7 @@
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  
+
   /* Radius */
   --radius: 0.75rem;
 
@@ -64,14 +64,14 @@
   --border: oklch(0.92 0.008 250);
   --input: oklch(0.92 0.008 250);
   --ring: oklch(0.55 0.22 250);
-  
+
   /* Chart Tokens */
   --chart-1: oklch(0.55 0.22 250);
   --chart-2: oklch(0.58 0.18 174);
   --chart-3: oklch(0.58 0.22 348);
   --chart-4: oklch(0.68 0.18 45);
   --chart-5: oklch(0.60 0.20 290);
-  
+
   /* Sidebar Tokens */
   --sidebar: oklch(0.99 0.002 250);
   --sidebar-foreground: oklch(0.22 0.015 250);
@@ -109,14 +109,14 @@
   --border: oklch(0.28 0.018 250);
   --input: oklch(0.28 0.018 250);
   --ring: oklch(0.65 0.24 250);
-  
+
   /* Chart Tokens */
   --chart-1: oklch(0.65 0.24 250);
   --chart-2: oklch(0.65 0.20 174);
   --chart-3: oklch(0.65 0.24 348);
   --chart-4: oklch(0.72 0.20 45);
   --chart-5: oklch(0.68 0.22 290);
-  
+
   /* Sidebar Tokens */
   --sidebar: oklch(0.15 0.012 250);
   --sidebar-foreground: oklch(0.95 0.005 250);
@@ -198,11 +198,17 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 
-  code, pre {
+  code,
+  pre {
     @apply font-mono;
   }
 
@@ -214,112 +220,12 @@
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
   }
-}
-/* ============================================================
-   CRYSTAL GLASS DESIGN SYSTEM (EXCLUSIVE)
-   ============================================================ */
-
-.glass-master {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(25px) saturate(160%);
-  -webkit-backdrop-filter: blur(25px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
-}
-
-.dark .glass-master {
-  background: rgba(15, 23, 42, 0.35);
-  backdrop-filter: blur(30px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
-}
-
-.glass-text {
-  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.crystal-blur {
-  backdrop-filter: blur(100px) saturate(200%);
-  background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent);
-}
-
-@keyframes crystal-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.1); opacity: 0.9; }
-}
-
-.animate-crystal {
-  animation: crystal-pulse 12s infinite ease-in-out;
-}
-
-.video-mask {
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
-}
-
-.text-reveal {
-  background: linear-gradient(90deg, #fff 0%, #a78bfa 50%, #2dd4bf 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: reveal 10s linear infinite;
-}
-
-@keyframes reveal {
-  to { background-position: 200% center; }
-}
-
-@keyframes glass-shine {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  50%, 100% { transform: translateX(200%) skewX(-15deg); }
-}
-
-.glass-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-shine::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transform: skewX(-15deg);
-  transition: 0.7s;
-}
-
-.glass-shine:hover::after {
-  animation: glass-shine 1s forwards;
-}
-
-@keyframes float-ultra {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(30px, -40px) rotate(2deg); }
-  66% { transform: translate(-20px, 20px) rotate(-1deg); }
-}
-
-.bg-mesh {
-  background-color: #f8fafc;
-  background-image: 
-    radial-gradient(at 0% 0%, var(--mesh-1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, var(--mesh-2) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, var(--mesh-3) 0, transparent 50%), 
-    radial-gradient(at 0% 100%, var(--mesh-4) 0, transparent 50%);
-  background-size: 100% 100%;
 }
