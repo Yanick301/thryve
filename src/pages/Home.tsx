@@ -26,7 +26,6 @@ import { Button } from '@/components/ui/button';
 import { ROUTE_PATHS } from '@/lib/index';
 import { LandingHeader, LandingFooter } from '@/components/Layout';
 import { FeatureCard, PricingCard, TestimonialCard } from '@/components/Cards';
-import { ROUTE_PATHS } from '@/lib/index';
 import { MOCK_PRICING, MOCK_TESTIMONIALS, MOCK_FAQ, FEATURES } from '@/data/index';
 import { springPresets } from '@/lib/motion';
 import { IMAGES } from '@/assets/images';
@@ -294,24 +293,18 @@ function HeroSection() {
   );
 }
 
-// ─── Stats Section (Enhanced 2.0) ──────────────────────────────
-function StatsSection() {
-  const stats = [
-    { value: '12K+', label: 'Elite Creators', icon: Users, color: '#8b5cf6' },
-    { value: '2.4M+', label: 'Strategic Posts', icon: TrendingUp, color: '#14b8a6' },
-    { value: '99.9%', label: 'Mastery Uptime', icon: Shield, color: '#3b82f6' },
-    { value: '4.9/5', label: 'Victory Rank', icon: Sparkles, color: '#ec4899' },
-  ];
-
+// ─── Social Proof Banner ──────────────────────────────────────
+function SocialProofBanner() {
+  const logos = ['FORBES', 'TECHCRUNCH', 'WIRED', 'VERGE', 'ACCEL', 'SEQUOIA'];
   return (
     <section className="py-12 border-y border-border bg-muted/20">
       <div className="max-w-full mx-auto px-6 lg:px-12">
-        <p className="text-center text-sm text-muted-foreground font-medium mb-8">
+        <p className="text-center text-sm text-muted-foreground font-medium mb-8 uppercase tracking-widest">
           Ils font confiance à Thryve pour leur social media
         </p>
-        <div className="flex flex-wrap justify-center items-center gap-8 opacity-40">
+        <div className="flex flex-wrap justify-center items-center gap-12 sm:gap-20 opacity-30 invert dark:invert-0 grayscale">
           {logos.map((logo) => (
-            <span key={logo} className="text-lg font-bold text-foreground tracking-tight">
+            <span key={logo} className="text-xl font-black text-foreground tracking-tighter">
               {logo}
             </span>
           ))}
@@ -470,28 +463,31 @@ function BenefitsSection() {
 // ─── Stats Section ────────────────────────────────────────────
 function StatsSection() {
   const stats = [
-    { value: '12 000+', label: 'Créateurs actifs', icon: Users },
-    { value: '2.4M+', label: 'Posts publiés', icon: TrendingUp },
-    { value: '99.9%', label: 'Uptime garanti', icon: Shield },
-    { value: '4.9/5', label: 'Note moyenne', icon: Sparkles },
+    { value: '12K+', label: 'Elite Creators', icon: Users, color: '#8b5cf6' },
+    { value: '2.4M+', label: 'Strategic Posts', icon: TrendingUp, color: '#14b8a6' },
+    { value: '99.9%', label: 'Mastery Uptime', icon: Shield, color: '#3b82f6' },
+    { value: '4.9/5', label: 'Victory Rank', icon: Sparkles, color: '#ec4899' },
   ];
 
   return (
-    <section className="py-16" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}>
+    <section className="py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-primary/5 -z-10" />
       <div className="max-w-full mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8 gap-8">
-          {stats.map(({ value, label, icon: Icon }, index) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+          {stats.map(({ value, label, icon: Icon, color }, index) => (
             <motion.div
               key={label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="text-center text-white"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="text-center"
             >
-              <Icon className="w-6 h-6 mx-auto mb-3 opacity-80" />
-              <p className="text-3xl font-extrabold mb-1">{value}</p>
-              <p className="text-sm text-white/70">{label}</p>
+              <div className="w-16 h-16 rounded-3xl glass-master mx-auto mb-6 flex items-center justify-center border-white/40 shadow-xl group hover:scale-110 transition-transform duration-500">
+                <Icon className="w-8 h-8" style={{ color }} />
+              </div>
+              <p className="text-5xl font-black text-foreground mb-2 tracking-tighter">{value}</p>
+              <p className="text-xs text-foreground/40 font-black uppercase tracking-[0.4em]">{label}</p>
             </motion.div>
           ))}
         </div>
@@ -592,15 +588,15 @@ function PricingSection() {
           {/* Toggle */}
           <div className="inline-flex items-center gap-3 bg-muted p-1.5 rounded-2xl">
             <button
-              onClick={() => setYearly(false)}
-              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${!yearly ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground'
+              onClick={() => setIsYearly(false)}
+              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${!isYearly ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground'
                 }`}
             >
               Mensuel
             </button>
             <button
-              onClick={() => setYearly(true)}
-              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${yearly ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground'
+              onClick={() => setIsYearly(true)}
+              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${isYearly ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground'
                 }`}
             >
               Annuel
@@ -610,10 +606,10 @@ function PricingSection() {
             </button>
           </div>
         </motion.div>
-
+ 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {MOCK_PRICING.map((plan, index) => (
-            <PricingCard key={plan.id} plan={plan} yearly={yearly} index={index} />
+            <PricingCard key={plan.id} plan={plan} yearly={isYearly} index={index} />
           ))}
         </div>
       </div>
@@ -710,15 +706,15 @@ function FAQSection() {
             >
               <button
                 className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-muted/30 transition-colors"
-                onClick={() => setOpen(open === index ? null : index)}
+                onClick={() => setActive(active === index ? null : index)}
               >
                 <span className="font-semibold text-foreground text-sm">{q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground flex-shrink-0 ml-4 transition-transform duration-200 ${open === index ? 'rotate-180' : ''
+                  className={`w-4 h-4 text-muted-foreground flex-shrink-0 ml-4 transition-transform duration-200 ${active === index ? 'rotate-180' : ''
                     }`}
                 />
               </button>
-              {open === index && (
+              {active === index && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
@@ -918,6 +914,6 @@ export default function Home() {
         <CTASection />
       </main>
       <LandingFooter />
-    </div >
+    </>
   );
 }
