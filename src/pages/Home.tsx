@@ -4,7 +4,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Play,
@@ -29,6 +29,7 @@ import { FeatureCard, PricingCard, TestimonialCard } from '@/components/Cards';
 import { MOCK_PRICING, MOCK_TESTIMONIALS, MOCK_FAQ, FEATURES } from '@/data/index';
 import { springPresets } from '@/lib/motion';
 import { IMAGES } from '@/assets/images';
+import { useAuth } from '@/hooks/useAuth';
 
 // ─── Hero Section (Mastery 2.0) ────────────────────────────────
 function HeroSection() {
@@ -892,23 +893,43 @@ const MOCK_FAQ = [
   },
 ];
 
-// ─── Main Landing Page ────────────────────────────────────────
+// ─── Page d'accueil principale ────────────────────────────────────────
 export default function Home() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate(ROUTE_PATHS.DASHBOARD);
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // If authenticated, we return null while navigate handles the redirect
+  if (isAuthenticated) return null;
+
   return (
-    <>
+    <div className="min-h-screen bg-background">
       <LandingHeader />
       <main>
         <HeroSection />
         <SocialProofBanner />
         <FeaturesSection />
-        <StatsSection />
         <BenefitsSection />
+        <StatsSection />
         <TestimonialsSection />
         <PricingSection />
         <FAQSection />
         <CTASection />
       </main>
       <LandingFooter />
-    </>
+    </div>
   );
 }

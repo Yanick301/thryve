@@ -73,23 +73,35 @@ export function LandingHeader() {
           </nav>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link to={ROUTE_PATHS.LOGIN}>
-              <Button variant="ghost" size="sm" className="font-medium">
-                Se connecter
-              </Button>
-            </Link>
-            <Link to={ROUTE_PATHS.REGISTER}>
-              <Button
-                size="sm"
-                className="font-semibold shadow-sm"
-                style={{
-                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
-                }}
-              >
-                Commencer gratuitement
-              </Button>
-            </Link>
+          <div className="hidden md:flex items-center gap-4">
+            {isLoading ? (
+              <div className="w-20 h-8 bg-muted animate-pulse rounded-lg" />
+            ) : isAuthenticated ? (
+              <Link to={ROUTE_PATHS.DASHBOARD}>
+                <Button 
+                  size="sm" 
+                  className="font-black uppercase tracking-[0.2em] text-[10px] rounded-xl px-6 py-5 bg-primary text-white shadow-lg hover:scale-105 transition-all"
+                >
+                  Tableau de Bord
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to={ROUTE_PATHS.LOGIN}>
+                  <Button variant="ghost" size="sm" className="font-bold text-[10px] uppercase tracking-widest hover:bg-muted/60">
+                    Se connecter
+                  </Button>
+                </Link>
+                <Link to={ROUTE_PATHS.REGISTER}>
+                  <Button
+                    size="sm"
+                    className="font-black uppercase tracking-[0.2em] text-[10px] rounded-xl px-6 py-5 bg-primary text-white shadow-lg hover:scale-105 transition-all"
+                  >
+                    Essayer Maintenant
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu toggle */}
@@ -125,15 +137,27 @@ export function LandingHeader() {
                 </a>
               ))}
             </nav>
-            <div className="flex flex-col gap-2 pt-3 border-t border-border mt-3">
-              <Link to={ROUTE_PATHS.LOGIN} onClick={() => setMenuOpen(false)}>
-                <Button variant="outline" className="w-full">Se connecter</Button>
-              </Link>
-              <Link to={ROUTE_PATHS.REGISTER} onClick={() => setMenuOpen(false)}>
-                <Button className="w-full font-semibold" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)' }}>
-                  Commencer gratuitement
-                </Button>
-              </Link>
+            <div className="flex flex-col gap-3 pt-4 border-t border-border mt-4">
+              {isLoading ? (
+                <div className="h-10 bg-muted animate-pulse rounded-xl" />
+              ) : isAuthenticated ? (
+                <Link to={ROUTE_PATHS.DASHBOARD} onClick={() => setMenuOpen(false)}>
+                  <Button className="w-full font-black uppercase tracking-widest text-xs py-5">
+                    Tableau de Bord
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link to={ROUTE_PATHS.LOGIN} onClick={() => setMenuOpen(false)}>
+                    <Button variant="outline" className="w-full font-bold uppercase tracking-widest text-xs py-5">Se connecter</Button>
+                  </Link>
+                  <Link to={ROUTE_PATHS.REGISTER} onClick={() => setMenuOpen(false)}>
+                    <Button className="w-full font-black uppercase tracking-widest text-xs py-5">
+                      Essayer Maintenant
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         )}
