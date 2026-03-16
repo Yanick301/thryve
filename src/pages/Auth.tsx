@@ -5,66 +5,87 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Zap, ArrowLeft, Mail, Lock, User, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { 
+  Eye, 
+  EyeOff, 
+  Zap, 
+  ArrowLeft, 
+  Mail, 
+  Lock, 
+  User, 
+  ArrowRight, 
+  CheckCircle2 
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ROUTE_PATHS } from '@/lib/index';
 import { useAuth } from '@/hooks/useAuth';
 import { Logo } from '@/components/Logo';
+import { BackgroundVideo } from '@/components/BackgroundVideo';
 
 // ─── Auth Wrapper ──────────────────────────────────────────────
 function AuthWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex">
-      {/* Left Panel — Form */}
-      <div className="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 py-12 bg-background">
-        {/* Logo */}
-        <Link to={ROUTE_PATHS.HOME} className="mb-10">
-          <Logo />
-        </Link>
+    <div className="min-h-screen flex relative overflow-hidden bg-background selection:bg-primary/20">
+      {/* Background Mesh */}
+      <div className="absolute inset-0 bg-mesh opacity-30 -z-10" />
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 blur-[150px] -z-10 animate-crystal" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/10 blur-[150px] -z-10 animate-float" />
 
-        <div className="w-full max-w-md">{children}</div>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 py-12 relative z-10 overflow-y-auto w-full">
+        {/* Logo Container */}
+        <div className="mb-12">
+          <Link to={ROUTE_PATHS.HOME}>
+            <Logo className="scale-125" />
+          </Link>
+        </div>
 
-        {/* Footer */}
-        <p className="text-xs text-muted-foreground mt-8">
-          © 2026 Thryve by <span className="font-bold text-foreground">DeOs</span>. Tous droits réservés.
+        {/* Master Glass Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-xl glass-master p-12 lg:p-16 rounded-[4rem] border-white/40 shadow-2xl relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-white/10 -z-10" />
+          {children}
+        </motion.div>
+
+        {/* Semantic Footer */}
+        <p className="text-[10px] text-foreground/30 mt-12 font-black uppercase tracking-[0.5em] text-center">
+          © 2026 THRYVE · BY DEOS
         </p>
       </div>
 
-      {/* Right Panel — Decorative */}
-      <div
-        className="hidden lg:flex flex-1 flex-col justify-center items-center px-12 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(145deg, #4F46E5 0%, #6D28D9 40%, #14B8A6 100%)',
-        }}
-      >
-        {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
-
-        <div className="relative text-white text-center max-w-sm z-10">
-          <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mx-auto mb-8">
-            <Zap className="w-8 h-8 text-white" fill="currentColor" />
+      {/* Decorative Side Decor (Desktop Elite) */}
+      <div className="hidden xl:flex w-[600px] h-screen relative overflow-hidden border-l border-white/40 glass-master">
+        <BackgroundVideo 
+          src="https://cdn.pixabay.com/vimeo/459039322/crystal-49938.mp4?width=1280&hash=d3e0f9b6c0e0b3b4f6b4f6b4f6b4f6b4f6b4f6b4"
+          overlayOpacity={0.1}
+        />
+        <div className="relative z-10 flex flex-col justify-center px-20 w-full">
+          <div className="w-24 h-24 rounded-[2rem] glass-master flex items-center justify-center mb-12 border-white/50 shadow-inner">
+            <Zap className="w-12 h-12 text-primary animate-crystal" />
           </div>
-          <h2 className="text-3xl font-extrabold mb-4 tracking-tight">
-            Votre présence sociale,<br />amplifiée
+          <h2 className="text-7xl font-black text-foreground mb-12 tracking-tighter uppercase leading-none">
+            THRYVE<br />
+            <span className="text-reveal text-5xl block mt-2">ACCÈS</span>
           </h2>
-          <p className="text-white/70 leading-relaxed mb-8">
-            Rejoignez 12 000+ créateurs et agences qui utilisent Thryve pour gérer leur contenu Instagram et Threads.
+          <p className="text-foreground/40 text-xs font-black uppercase tracking-[0.4em] leading-relaxed mb-16">
+            ENTREZ DANS L'ÈRE DU MULTI-RÉSEAUX OPTIMISÉ AVEC THRYVE.
           </p>
 
-          {/* Mini stats */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-8">
             {[
-              { value: '12K+', label: 'Utilisateurs' },
-              { value: '2.4M+', label: 'Posts publiés' },
-              { value: '4.9/5', label: 'Satisfaction' },
-              { value: '99.9%', label: 'Uptime' },
+              { value: '12K+', label: 'SYNCHRO ALPHA' },
+              { value: '2.4M+', label: 'PORTÉE TOTALE' },
+              { value: '4.9/5', label: 'OPTIMISATION' },
             ].map(({ value, label }) => (
-              <div key={label} className="bg-white/10 rounded-2xl p-4">
-                <p className="text-2xl font-extrabold">{value}</p>
-                <p className="text-white/60 text-xs mt-1">{label}</p>
+              <div key={label} className="glass-master px-10 py-8 rounded-[2.5rem] border-white/50 shadow-sm transition-transform hover:scale-105 group cursor-default">
+                <p className="text-5xl font-black text-foreground tracking-tighter leading-none group-hover:text-primary transition-colors">{value}</p>
+                <p className="text-[9px] text-foreground/30 font-black uppercase tracking-[0.5em] mt-3">{label}</p>
               </div>
             ))}
           </div>
@@ -74,7 +95,7 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Login Page ───────────────────────────────────────────────
+// ─── Login Page Implementation ─────────────────────────────────
 export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -86,125 +107,121 @@ export function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('[LoginUI] Form submitted with:', { email });
     setError('');
     if (!email || !password) {
-      setError('Veuillez remplir tous les champs.');
+      setError('COORDONNÉES ABSENTES');
       return;
     }
     setLoading(true);
     try {
       const result = await login(email, password);
-      console.log('[LoginUI] result:', result);
       setLoading(false);
       if (result.success) {
-        console.log('[LoginUI] Success, navigating to dashboard');
         navigate(ROUTE_PATHS.DASHBOARD);
       } else {
-        console.error('[LoginUI] Expected failure:', result.error);
-        setError(result.error || 'Email ou mot de passe incorrect.');
+        setError(result.error || 'IDENTIFIANTS INVALIDES');
       }
     } catch (err: any) {
-      console.error('[LoginUI] Catch error:', err);
-      setError('Erreur technique: ' + err.message);
+      setError('SIGNAL PERDU : ' + err.message);
       setLoading(false);
     }
   };
 
   return (
     <AuthWrapper>
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="mb-8">
-          <h1 className="text-2xl font-extrabold text-foreground mb-2">Bon retour ! 👋</h1>
-          <p className="text-muted-foreground text-sm">
-            Connectez-vous à votre espace Thryve
+      <div className="space-y-12">
+        <div className="text-center">
+          <h1 className="text-6xl font-black text-foreground tracking-tighter uppercase leading-tight mb-4">
+            RETOUR AU<br />
+            <span className="text-reveal text-5xl">CONTRÔLE</span>
+          </h1>
+          <p className="text-[10px] text-foreground/40 mt-4 font-black uppercase tracking-[0.4em]">
+            Authentification requise
           </p>
         </div>
 
         {error && (
-          <div className="bg-destructive/8 text-destructive text-sm px-4 py-3 rounded-xl border border-destructive/15 mb-6">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-destructive/10 text-destructive text-[10px] font-black uppercase tracking-widest px-8 py-5 rounded-[2rem] border border-destructive/20 text-center"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-4">
+            <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50 ml-8">IDENTIFIANT ALPHA (EMAIL)</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Mail className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
               <Input
                 id="email"
                 type="email"
-                placeholder="vous@exemple.com"
+                placeholder="votre@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 rounded-xl h-11"
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                className="pl-20 h-20 rounded-[2.5rem] glass-master border-white/50 font-black tracking-widest text-xs focus:bg-white/10 focus:ring-primary/20 transition-all duration-500"
                 autoComplete="email"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm font-medium">Mot de passe</Label>
-              <Link to={ROUTE_PATHS.FORGOT_PASSWORD} className="text-xs text-primary hover:underline font-medium">
-                Mot de passe oublié ?
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-8">
+              <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/50">CODE SECRET</Label>
+              <Link to={ROUTE_PATHS.FORGOT_PASSWORD} className="text-[8px] text-primary font-black uppercase tracking-widest hover:underline">
+                OUBLIÉ ?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Lock className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Votre mot de passe"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 rounded-xl h-11"
+                className="pl-20 pr-20 h-20 rounded-[2.5rem] glass-master border-white/50 font-black text-xs focus:bg-white/10 focus:ring-primary/20 transition-all duration-500"
                 autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-8 top-1/2 -translate-y-1/2 text-foreground/30 hover:text-foreground transition-colors"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="w-6 h-6" /> : <Eye className="w-6 h-6" />}
               </button>
             </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-11 rounded-xl font-bold text-sm"
+            className="w-full h-20 rounded-[2.5rem] font-black uppercase tracking-[0.4em] text-xs bg-primary text-white hover:scale-105 active:scale-95 transition-all duration-500 shadow-2xl border-none mt-4"
             disabled={loading}
-            style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
           >
             {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <>Se connecter <ArrowRight className="ml-2 w-4 h-4" /></>
+              <>DÉMARRER LA SESSION <ArrowRight className="ml-5 w-6 h-6" /></>
             )}
           </Button>
         </form>
 
-        {/* Demo hint */}
-        <div className="mt-4 p-3 bg-muted/50 rounded-xl border border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            <span className="font-semibold">Démo :</span> Entrez n'importe quel email/mot de passe pour accéder au dashboard
+        <div className="pt-10 border-t border-white/30 text-center space-y-10">
+          <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest leading-relaxed">
+            Nouveau sur Thryve ?{' '}
+            <Link to={ROUTE_PATHS.REGISTER} className="text-primary hover:underline">
+              CRÉER UN ACCÈS ALPHA
+            </Link>
           </p>
         </div>
-
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Pas encore de compte ?{' '}
-          <Link to={ROUTE_PATHS.REGISTER} className="text-primary font-semibold hover:underline">
-            Créer un compte
-          </Link>
-        </p>
-      </motion.div>
+      </div>
     </AuthWrapper>
   );
 }
 
-// ─── Register Page ────────────────────────────────────────────
+// ─── Register Page Implementation ──────────────────────────────
 export function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -219,152 +236,115 @@ export function RegisterPage() {
     e.preventDefault();
     setError('');
     if (!name || !email || !password) {
-      setError('Veuillez remplir tous les champs.');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères.');
+      setError('DONNÉES COMPROMISES');
       return;
     }
     setLoading(true);
     const result = await register(name, email, password);
     setLoading(false);
     if (result.success) {
-      if (result.error) {
-        // Success but with a message (e.g. email confirmation)
-        console.log('[Register] Success with info:', result.error);
-        setError(result.error);
-        return;
-      }
-      console.log('[Register] Success, navigating to dashboard');
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {
-      console.error('[Register] Failed:', result.error);
-      setError(result.error || 'Une erreur est survenue lors de l\'inscription.');
+      setError(result.error || 'ERREUR DE CRÉATION');
     }
   };
 
-  const features = [
-    'Plan Starter gratuit pour toujours',
-    'Aucune carte bancaire requise',
-    'Accès immédiat au dashboard',
-  ];
-
   return (
     <AuthWrapper>
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="mb-8">
-          <h1 className="text-2xl font-extrabold text-foreground mb-2">Créez votre compte 🚀</h1>
-          <p className="text-muted-foreground text-sm">
-            Rejoignez 12 000+ créateurs sur Thryve. Gratuit.
+      <div className="space-y-12">
+        <div className="text-center">
+          <h1 className="text-6xl font-black text-foreground tracking-tighter uppercase leading-tight mb-4">
+            REJOINDRE LE<br />
+            <span className="text-reveal text-5xl">RÉSEAU</span>
+          </h1>
+          <p className="text-[10px] text-foreground/40 mt-4 font-black uppercase tracking-[0.4em]">
+            Initialisation du profil Thryve
           </p>
         </div>
 
-        {/* Benefits */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          {features.map((f) => (
-            <div key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <CheckCircle2 className="w-3.5 h-3.5 text-accent flex-shrink-0" />
-              <span>{f}</span>
-            </div>
-          ))}
-        </div>
-
         {error && (
-          <div className="bg-destructive/8 text-destructive text-sm px-4 py-3 rounded-xl border border-destructive/15 mb-6">
+          <div className="bg-destructive/10 text-destructive text-[10px] font-black uppercase tracking-widest px-8 py-5 rounded-[2rem] border border-destructive/20 text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="name" className="text-sm font-medium">Nom complet</Label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-3">
+            <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-foreground/50 ml-8">DÉSIGNATION (NOM)</Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <User className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
               <Input
                 id="name"
-                type="text"
-                placeholder="Sophie Martin"
+                placeholder="votre nom"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="pl-10 rounded-xl h-11"
-                autoComplete="name"
+                className="pl-20 h-16 rounded-[2rem] glass-master border-white/50 font-black tracking-widest text-xs"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm font-medium">Email professionnel</Label>
+          <div className="space-y-3">
+            <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-foreground/50 ml-8">CANAL DE TRANSMISSION</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Mail className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
               <Input
                 id="email"
                 type="email"
-                placeholder="vous@exemple.com"
+                placeholder="votre@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 rounded-xl h-11"
-                autoComplete="email"
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                className="pl-20 h-16 rounded-[2rem] glass-master border-white/50 font-black tracking-widest text-xs"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm font-medium">Mot de passe</Label>
+          <div className="space-y-3">
+            <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-foreground/50 ml-8">CLÉ DE CRYPTAGE</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Lock className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Min. 6 caractères"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 rounded-xl h-11"
-                autoComplete="new-password"
+                className="pl-20 pr-20 h-16 rounded-[2rem] glass-master border-white/50 font-black text-xs"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-8 top-1/2 -translate-y-1/2 text-foreground/30"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-11 rounded-xl font-bold text-sm mt-2"
+            className="w-full h-20 rounded-[2.5rem] font-black uppercase tracking-[0.4em] text-xs bg-primary text-white hover:scale-105 transition-all duration-500 shadow-2xl border-none mt-8"
             disabled={loading}
-            style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
           >
             {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <>Créer mon compte gratuit <ArrowRight className="ml-2 w-4 h-4" /></>
+              'VALIDER ACCÈS THRYVE'
             )}
           </Button>
         </form>
 
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          En vous inscrivant, vous acceptez nos{' '}
-          <a href="#" className="text-primary hover:underline">CGU</a>{' '}
-          et notre{' '}
-          <a href="#" className="text-primary hover:underline">Politique de confidentialité</a>.
-        </p>
-
-        <p className="text-center text-sm text-muted-foreground mt-5">
-          Déjà un compte ?{' '}
-          <Link to={ROUTE_PATHS.LOGIN} className="text-primary font-semibold hover:underline">
-            Se connecter
+        <p className="text-center text-[10px] text-foreground/40 font-black uppercase tracking-widest mt-12">
+          Déjà identifié ?{' '}
+          <Link to={ROUTE_PATHS.LOGIN} className="text-primary hover:underline">
+            CONNEXION
           </Link>
         </p>
-      </motion.div>
+      </div>
     </AuthWrapper>
   );
 }
 
-// ─── Forgot Password Page ─────────────────────────────────────
+// ─── Forgot Password Page Implementation ───────────────────────
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -381,36 +361,39 @@ export function ForgotPasswordPage() {
 
   return (
     <AuthWrapper>
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="space-y-12">
         <Link
           to={ROUTE_PATHS.LOGIN}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 group"
+          className="flex items-center gap-4 text-[10px] text-foreground/40 hover:text-primary transition-all font-black uppercase tracking-widest mb-10 group"
         >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-          Retour à la connexion
+          <ArrowLeft className="w-6 h-6 transition-transform group-hover:-translate-x-3" />
+          RETOUR THRYVE
         </Link>
 
         {!sent ? (
           <>
-            <div className="mb-8">
-              <h1 className="text-2xl font-extrabold text-foreground mb-2">Mot de passe oublié ?</h1>
-              <p className="text-muted-foreground text-sm">
-                Pas de panique ! Entrez votre email et nous vous enverrons un lien de réinitialisation.
+            <div className="text-center">
+              <h1 className="text-6xl font-black text-foreground mb-8 tracking-tighter uppercase leading-tight">
+                RÉCUPÉRATION<br />
+                <span className="text-reveal text-5xl">DU SIGNAL</span>
+              </h1>
+              <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.4em]">
+                Canal de réinitialisation sécurisé
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-medium">Votre email</Label>
+            <form onSubmit={handleSubmit} className="space-y-10">
+              <div className="space-y-4">
+                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-foreground/50 ml-8">EMAIL DE RÉFÉRENCE</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Mail className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="vous@exemple.com"
+                    placeholder="alpha@thryve.fr"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 rounded-xl h-11"
+                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                    className="pl-20 rounded-[2.5rem] h-20 glass-master border-white/50 font-black tracking-widest text-xs"
                     autoComplete="email"
                   />
                 </div>
@@ -418,42 +401,38 @@ export function ForgotPasswordPage() {
 
               <Button
                 type="submit"
-                className="w-full h-11 rounded-xl font-bold text-sm"
+                className="w-full h-20 rounded-[2.5rem] font-black uppercase tracking-[0.4em] text-xs shadow-2xl transition-all duration-700 hover:scale-105 active:scale-95 bg-primary text-white border-none"
                 disabled={loading}
-                style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
               >
                 {loading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  'Envoyer le lien de réinitialisation'
+                  'ÉMETTRE SIGNAL DE RÉCUPÉRATION'
                 )}
               </Button>
             </form>
           </>
         ) : (
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center"
+            className="text-center flex flex-col items-center"
           >
-            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-8 h-8 text-accent" />
+            <div className="w-32 h-32 bg-primary/10 rounded-[3rem] flex items-center justify-center mb-12 border border-primary/20 shadow-xl">
+              <CheckCircle2 className="w-16 h-16 text-primary animate-crystal" />
             </div>
-            <h2 className="text-xl font-extrabold text-foreground mb-3">Email envoyé ! ✉️</h2>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-              Si un compte Thryve est associé à <strong>{email}</strong>, vous recevrez un email avec les instructions dans les prochaines minutes.
+            <h2 className="text-4xl font-black text-foreground mb-6 tracking-tighter uppercase">SIGNAL ÉMIS</h2>
+            <p className="text-[10px] text-foreground/40 font-black uppercase tracking-[0.3em] leading-relaxed mb-12 px-12">
+              Si votre canal <strong className="text-primary">{email}</strong> est reconnu, un signal intercepté apparaîtra dans votre boîte sous peu.
             </p>
-            <p className="text-xs text-muted-foreground">
-              Vérifiez vos spams si vous ne voyez rien sous 5 minutes.
-            </p>
-            <Link to={ROUTE_PATHS.LOGIN} className="mt-6 inline-block">
-              <Button variant="outline" className="rounded-xl font-medium">
-                Retour à la connexion
+            <Link to={ROUTE_PATHS.LOGIN}>
+              <Button className="rounded-[2.5rem] glass-master border-white/50 font-black uppercase tracking-widest text-[10px] px-16 h-16 hover:scale-110 transition-all duration-500 shadow-xl">
+                RÉINITIALISER LA SESSION
               </Button>
             </Link>
           </motion.div>
         )}
-      </motion.div>
+      </div>
     </AuthWrapper>
   );
 }

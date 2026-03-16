@@ -14,20 +14,17 @@ class ScrollManager {
     await page.evaluate(async (scrollDistance) => {
       await new Promise((resolve) => {
         let totalHeight = 0;
-        let distance = 100;
         let timer = setInterval(() => {
           let scrollHeight = document.body.scrollHeight;
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-
-          // Randomize distance slightly to look human
-          distance = 50 + Math.floor(Math.random() * 100);
+          const step = Math.floor(Math.random() * 30) + 10;
+          window.scrollBy(0, step);
+          totalHeight += step;
 
           if (totalHeight >= scrollDistance || totalHeight >= scrollHeight) {
             clearInterval(timer);
             resolve();
           }
-        }, 100 + Math.random() * 200); // Random delay between scroll steps
+        }, 40 + Math.random() * 60);
       });
     }, distance);
   }

@@ -264,28 +264,30 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden relative">
+      <div className="absolute inset-0 bg-mesh opacity-30 -z-10" />
+      
       {/* Sidebar Overlay (mobile) */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-md md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar - Fixed width 280px */}
       <aside
-        className={`fixed lg:relative z-50 lg:z-auto flex flex-col w-72 h-full bg-sidebar border-r border-sidebar-border transition-transform duration-300 ease-in-out
+        className={`fixed lg:relative z-50 lg:z-auto flex flex-col w-80 h-full glass-master border-r border-white/40 transition-transform duration-500 ease-in-out shadow-2xl
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Logo */}
-        <div className="flex items-center px-5 h-16 border-b border-sidebar-border flex-shrink-0">
-          <Logo className="scale-90 origin-left" />
+        <div className="flex items-center px-8 h-24 border-b border-white/40 flex-shrink-0">
+          <Logo className="scale-110 origin-left" />
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3">
-          <div className="space-y-1">
+        <nav className="flex-1 overflow-y-auto py-8 px-4 custom-scrollbar">
+          <div className="space-y-3">
             {SIDEBAR_LINKS.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.href;
@@ -294,15 +296,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   key={link.href}
                   to={link.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group
+                  className={`flex items-center gap-4 px-6 py-4 rounded-3xl text-sm font-black transition-all duration-500 group relative overflow-hidden
                     ${isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-sidebar-accent'
+                      ? 'bg-primary text-white shadow-xl scale-105'
+                      : 'text-foreground/40 hover:text-foreground hover:bg-white/40'
                     }`}
                 >
-                  <Icon className={`w-4.5 h-4.5 flex-shrink-0 ${isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`} size={18} />
-                  <span>{link.label}</span>
-                  {isActive && <ChevronRight className="ml-auto w-3.5 h-3.5 opacity-60" />}
+                  <Icon className={`w-5 h-5 flex-shrink-0 transition-transform duration-500 group-hover:scale-110 ${isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`} />
+                  <span className="uppercase tracking-[0.2em]">{link.label}</span>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="sidebar-active"
+                      className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white]"
+                    />
+                  )}
                 </NavLink>
               );
             })}
@@ -317,43 +324,46 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Plan Badge */}
-        <div className="px-3 py-3 border-t border-sidebar-border">
-          <div className="rounded-xl bg-muted/50 p-3 flex items-center gap-3">
-            <Crown className="w-4 h-4 text-primary flex-shrink-0" />
+        <div className="px-6 py-4">
+          <div className="rounded-[2.5rem] glass-master p-6 flex items-center gap-4 relative overflow-hidden border-white/50 shadow-inner group cursor-pointer hover:scale-105 transition-all duration-700">
+            <div className="absolute inset-0 bg-primary/5 -z-10" />
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <Crown className="w-6 h-6 text-primary animate-crystal" />
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-foreground capitalize">
-                Plan {user?.plan || 'Starter'}
+              <p className="text-[10px] font-black text-foreground uppercase tracking-widest">
+                {user?.plan || 'Starter'} ALPHA
               </p>
-              <p className="text-xs text-muted-foreground truncate">Passer à Agency →</p>
+              <p className="text-[8px] text-primary font-black uppercase tracking-[0.3em] mt-1">Upgrade →</p>
             </div>
           </div>
         </div>
 
         {/* User */}
-        <div className="px-3 py-3 border-t border-sidebar-border">
+        <div className="px-4 py-6 border-t border-white/40">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sidebar-accent transition-colors duration-150 group">
-                <Avatar className="w-8 h-8 flex-shrink-0">
+              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-[2rem] glass-master border-white/50 hover:bg-white/20 transition-all duration-500 group shadow-sm">
+                <Avatar className="w-10 h-10 flex-shrink-0 border-2 border-white/50 shadow-inner">
                   <AvatarImage src={user?.avatar} />
-                  <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary font-black uppercase tracking-widest">
                     {user ? getInitials(user.name) : 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  <p className="text-xs font-black text-foreground uppercase tracking-widest truncate">{user?.name}</p>
+                  <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest truncate">{user?.plan} ALPHA</p>
                 </div>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => navigate(ROUTE_PATHS.SETTINGS)}>
-                <Settings className="mr-2 h-4 w-4" />
+            <DropdownMenuContent align="end" className="w-64 glass-master border-white/40 p-2 rounded-3xl shadow-2xl">
+              <DropdownMenuItem onClick={() => navigate(ROUTE_PATHS.SETTINGS)} className="rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
+                <Settings className="mr-3 h-4 w-4 text-primary" />
                 Paramètres
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                <LogOut className="mr-2 h-4 w-4" />
+              <DropdownMenuSeparator className="bg-white/40 my-2" />
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
+                <LogOut className="mr-3 h-4 w-4" />
                 Se déconnecter
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -364,45 +374,43 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <header className="flex-shrink-0 h-16 bg-background border-b border-border flex items-center justify-between px-4 sm:px-6">
+        <header className="flex-shrink-0 h-24 bg-white/20 backdrop-blur-3xl border-b border-white/40 flex items-center justify-between px-8 relative z-30">
           <button
-            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+            className="lg:hidden p-3 rounded-2xl glass-master border-white/50 hover:bg-white/40 transition-all duration-500"
             onClick={() => setSidebarOpen(true)}
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-6 h-6 text-foreground" />
           </button>
 
-          <div className="flex items-center gap-1 md:gap-2 ml-auto">
+          <div className="flex items-center gap-6 ml-auto">
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="relative p-2 rounded-xl hover:bg-muted transition-colors">
-                  <Bell className="w-5 h-5 text-muted-foreground" />
+                <button className="relative w-12 h-12 rounded-2xl glass-master border-white/50 hover:bg-white/40 transition-all duration-500 flex items-center justify-center group shadow-sm">
+                  <Bell className="w-5 h-5 text-foreground/60 group-hover:text-primary transition-colors" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-4 h-4 bg-destructive rounded-full text-[10px] text-white font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full text-[10px] text-white font-black flex items-center justify-center border-2 border-white shadow-lg animate-pulse">
                       {unreadCount}
                     </span>
                   )}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
-                <div className="px-4 py-3 border-b border-border">
-                  <h3 className="font-semibold text-sm">Notifications</h3>
-                  <p className="text-xs text-muted-foreground">{unreadCount} non lues</p>
+              <DropdownMenuContent align="end" className="w-96 glass-master border-white/40 p-4 rounded-[2rem] shadow-2xl mt-4">
+                <div className="px-6 py-4 border-b border-white/40 mb-2">
+                  <h3 className="font-black text-xs uppercase tracking-widest">Notifications</h3>
+                  <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest mt-1">{unreadCount} non lues</p>
                 </div>
-                <div className="max-h-80 overflow-y-auto">
+                <div className="max-h-96 overflow-y-auto custom-scrollbar px-2">
                   {MOCK_NOTIFICATIONS.map((notif) => (
                     <div
                       key={notif.id}
-                      className={`px-4 py-3 border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${!notif.read ? 'bg-primary/3' : ''}`}
+                      className={`px-6 py-4 rounded-2xl mb-2 hover:bg-white/40 transition-all duration-500 cursor-pointer border border-transparent hover:border-white/50 ${!notif.read ? 'bg-primary/5' : ''}`}
                     >
-                      <div className="flex items-start gap-2">
-                        {!notif.read && (
-                          <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
-                        )}
-                        <div className={!notif.read ? '' : 'pl-4'}>
-                          <p className="text-sm font-medium text-foreground">{notif.title}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{notif.message}</p>
+                      <div className="flex items-start gap-4">
+                        <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 shadow-[0_0_10px_currentColor] ${!notif.read ? 'bg-primary text-primary' : 'bg-transparent'}`} />
+                        <div>
+                          <p className="text-xs font-black text-foreground uppercase tracking-widest">{notif.title}</p>
+                          <p className="text-[10px] text-foreground/50 font-bold mt-1 leading-relaxed">{notif.message}</p>
                         </div>
                       </div>
                     </div>
@@ -411,27 +419,27 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* User Avatar */}
+            {/* User Avatar Nexus */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 pl-2 rounded-xl hover:bg-muted transition-colors p-1.5">
-                  <Avatar className="w-7 h-7">
+                <button className="flex items-center gap-4 pl-4 pr-10 py-3 rounded-[1.5rem] glass-master border-white/40 hover:bg-white/40 transition-all duration-700 group shadow-lg">
+                  <Avatar className="w-8 h-8 border-2 border-white/50 shadow-inner">
                     <AvatarImage src={user?.avatar} />
-                    <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+                    <AvatarFallback className="text-[10px] bg-primary/20 text-primary font-black uppercase tracking-widest">
                       {user ? getInitials(user.name) : 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:block text-sm font-medium text-foreground">{user?.name?.split(' ')[0]}</span>
+                  <span className="hidden sm:block text-[10px] font-black text-foreground uppercase tracking-[0.4em]">{user?.name?.split(' ')[0]}</span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => navigate(ROUTE_PATHS.SETTINGS)}>
-                  <Settings className="mr-2 h-4 w-4" />
+              <DropdownMenuContent align="end" className="w-64 glass-master border-white/40 p-2 rounded-3xl shadow-2xl mt-4">
+                <DropdownMenuItem onClick={() => navigate(ROUTE_PATHS.SETTINGS)} className="rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
+                  <Settings className="mr-3 h-4 w-4 text-primary" />
                   Paramètres
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
+                <DropdownMenuSeparator className="bg-white/40 my-2" />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive rounded-2xl p-4 font-black uppercase tracking-widest text-[10px]">
+                  <LogOut className="mr-3 h-4 w-4" />
                   Se déconnecter
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -440,54 +448,59 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0">
+        <main className="flex-1 min-h-0 relative">
           <div className="flex h-full min-w-0">
-            {/* Center Content - Independent Scroll - Takes remaining space */}
-            <div className="flex-1 min-w-0 overflow-y-auto">
+            {/* Center Content - Independent Scroll */}
+            <div className="flex-1 min-w-0 overflow-y-auto custom-scrollbar">
               <div className="min-h-full w-full">
                 {children}
               </div>
             </div>
 
-            {/* Right Panel (Desktop Command Center) - Fixed width 350px */}
-            <aside className="hidden xl:flex flex-col w-[340px] 2xl:w-[380px] border-l border-border bg-card/40 backdrop-blur-xl overflow-y-auto">
-              <div className="p-6 space-y-8">
-                {/* AI Insights */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-primary">
-                    <Sparkles className="w-4 h-4" />
-                    <h3 className="text-xs font-bold uppercase tracking-wider">AI Insights</h3>
+            {/* Right Panel (Desktop Command Center Nexus) */}
+            <aside className="hidden xl:flex flex-col w-[360px] 2xl:w-[420px] glass-master border-l border-white/40 overflow-y-auto relative z-20">
+              <div className="absolute inset-0 bg-primary/5 -z-10" />
+              <div className="p-10 space-y-12">
+                {/* AI Insights Alpha */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 text-primary">
+                    <Sparkles className="w-5 h-5 animate-pulse" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.6em]">NEXUS ANALYTICA</h3>
                   </div>
-                  <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-4 border border-primary/10">
-                    <p className="text-sm text-foreground/80 leading-relaxed font-medium">
-                      "Votre engagement sur Threads a augmenté de 12% le matin. Essayez de publier à 8h demain."
+                  <div className="glass-master rounded-[2.5rem] p-8 border-white/40 shadow-2xl relative overflow-hidden group/insight">
+                    <div className="absolute inset-0 bg-primary/10 -z-10 animate-crystal" />
+                    <p className="text-[11px] text-foreground font-black uppercase tracking-widest leading-loose">
+                      "FRACTIONNEMENT DU FLUX DÉTECTÉ SUR THREADS (+12%). OPTIMISATION DU SIGNAL RECOMMANDÉE À 08:00."
                     </p>
-                    <Button variant="link" className="p-0 h-auto text-xs text-primary font-bold mt-2">
-                      Optimiser mon calendrier →
+                    <Button variant="link" className="p-0 h-auto text-[9px] text-primary font-black uppercase tracking-[0.4em] mt-6 hover:translate-x-2 transition-transform">
+                      LANCER OPTIMISATION →
                     </Button>
                   </div>
                 </div>
 
-                {/* Quick Stats */}
-                <div className="space-y-4">
-                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <TrendingUp className="w-4 h-4" />
-                    <h3 className="text-xs font-bold uppercase tracking-wider">Objectifs Hebdo</h3>
+                {/* Quick Stats Rays */}
+                <div className="space-y-6">
+                   <div className="flex items-center gap-4 text-foreground/40">
+                    <TrendingUp className="w-5 h-5" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.6em]">VECTEURS DE CROISSANCE</h3>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-8">
                     {[
-                      { label: 'Nouveaux abonnés', count: 124, target: 200, color: 'bg-primary' },
-                      { label: 'Reach posts', count: 850, target: 1000, color: 'bg-accent' },
+                      { label: 'OPÉRATEURS REJOINTS', count: 124, target: 200, color: 'var(--primary)' },
+                      { label: 'RAYONNEMENT SIGNAL', count: 850, target: 1000, color: 'var(--secondary)' },
                     ].map((goal) => (
-                      <div key={goal.label} className="space-y-1.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">{goal.label}</span>
-                          <span className="font-bold">{goal.count} / {goal.target}</span>
+                      <div key={goal.label} className="space-y-3">
+                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+                          <span className="text-foreground/40">{goal.label}</span>
+                          <span className="text-foreground">{goal.count} / {goal.target}</span>
                         </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full transition-all duration-1000 ${goal.color}`}
-                            style={{ width: `${(goal.count / goal.target) * 100}%` }}
+                        <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10 p-[1px]">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(goal.count / goal.target) * 100}%` }}
+                            transition={{ duration: 2, ease: "easeOut" }}
+                            className="h-full rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+                            style={{ backgroundColor: goal.color }}
                           />
                         </div>
                       </div>
@@ -495,34 +508,34 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
 
-                {/* Next Up */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <h3 className="text-xs font-bold uppercase tracking-wider">Prochain Post</h3>
+                {/* Next Transmission */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 text-foreground/40">
+                    <Clock className="w-5 h-5" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.6em]">PROCHAINE TRANSMISSION</h3>
                   </div>
-                  <div className="bg-muted/40 rounded-2xl p-4 border border-border group hover:border-primary/30 transition-colors cursor-pointer">
-                    <div className="flex gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-card border border-border overflow-hidden flex-shrink-0">
-                         {/* Placeholder for media preview */}
-                         <div className="w-full h-full bg-muted animate-pulse" />
+                  <div className="glass-master rounded-[2.5rem] p-6 border-white/20 hover:border-primary/40 transition-all duration-700 cursor-pointer group/next shadow-xl">
+                    <div className="flex gap-6 items-center">
+                      <div className="w-16 h-16 rounded-2xl glass-master border-white/40 overflow-hidden flex-shrink-0 animate-pulse">
+                         <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold truncate">Collection Printemps 2026</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">H-4 | Instagram</p>
+                        <p className="text-[11px] font-black text-foreground uppercase tracking-widest truncate">SPRING COLLECTION ALPHA</p>
+                        <p className="text-[9px] text-primary font-black uppercase tracking-[0.4em] mt-2 italic">H-4 | INSTAGRAM UNIT</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* DeOs Tips */}
-                <div className="bg-accent/5 rounded-2xl border border-accent/10 p-5 mt-auto">
-                   <div className="flex items-center gap-2 text-accent mb-2">
-                     <Target className="w-4 h-4" />
-                     <span className="text-xs font-bold">Conseil DeOs</span>
+                {/* DeOs Nexus Tips */}
+                <div className="glass-master rounded-[2rem] border-secondary/20 p-8 mt-auto shadow-2xl relative overflow-hidden">
+                   <div className="absolute inset-0 bg-secondary/5 -z-10" />
+                   <div className="flex items-center gap-4 text-secondary mb-6">
+                     <Target className="w-5 h-5" />
+                     <span className="text-[10px] font-black uppercase tracking-[0.6em]">PROTOCOLE ALPHA</span>
                    </div>
-                   <p className="text-xs text-muted-foreground leading-relaxed italic">
-                     "La constance est la clé. Un post par jour vaut mieux qu'une explosion mensuelle."
+                   <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest leading-loose italic">
+                     "LA PERSISTANCE DU SIGNAL EST LE FONDEMENT DE L'EXPANSION. UNE TRANSMISSION QUOTIDIENNE EST PRÉFÉRABLE À UNE SATURATION PONCTUELLE."
                    </p>
                 </div>
               </div>

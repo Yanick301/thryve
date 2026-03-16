@@ -25,6 +25,8 @@ import { ROUTE_PATHS, type MediaFile } from '@/lib/index';
 import { MOCK_ACCOUNTS } from '@/data/index';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
+import { automationService } from '@/services/automation';
+import { toast } from '@/hooks/use-toast';
 
 // ─── Caption suggestions ──────────────────────────────────────
 const CAPTION_SUGGESTIONS = [
@@ -43,71 +45,73 @@ const SUGGESTED_HASHTAGS = [
 type PlatformType = 'instagram' | 'threads' | 'both';
 type ScheduleType = 'now' | 'schedule';
 
-// ─── Phone Preview ────────────────────────────────────────────
+// ─── Phone Preview Nexus ──────────────────────────────────────
 function PhonePreview({ caption, hashtags, platform, mediaUrls }: { caption: string; hashtags: string[]; platform: PlatformType; mediaUrls: string[] }) {
   const isInstagram = platform === 'instagram' || platform === 'both';
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 mb-5">
+      <div className="flex items-center gap-3 mb-8">
         <div
-          className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-[10px] font-black shadow-lg"
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-[10px] font-black shadow-2xl animate-crystal border border-white/40"
           style={{ background: isInstagram ? 'linear-gradient(135deg, #E1306C, #F56040)' : '#000' }}
         >
           {isInstagram ? 'IG' : 'TH'}
         </div>
-        <span className="text-xs font-black uppercase tracking-widest text-muted-foreground/80">
-          Aperçu {isInstagram ? 'Instagram' : 'Threads'}
+        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">
+          SIGNAL: {isInstagram ? 'INSTAGRAM' : 'THREADS'}
         </span>
       </div>
 
-      {/* Phone frame */}
-      <div className="relative mx-auto w-full max-w-[280px] bg-black rounded-[3rem] p-3 shadow-2xl border-[6px] border-zinc-800">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-b-2xl z-10" /> {/* Dynamic Island */}
+      {/* Phone frame — Crystal Obsidian */}
+      <div className="relative mx-auto w-full max-w-[320px] bg-[#050505] rounded-[4rem] p-4 shadow-[0_0_100px_rgba(0,0,0,0.5)] border-[10px] border-[#1a1a1a]">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-3xl z-10 flex items-center justify-center">
+            <div className="w-12 h-1.5 bg-zinc-800 rounded-full" />
+        </div>
         
-        <div className="bg-white rounded-[2.2rem] h-full overflow-hidden flex flex-col">
+        <div className="bg-white rounded-[3rem] h-[550px] overflow-hidden flex flex-col shadow-inner">
           {/* Post header */}
-          <div className="flex items-center gap-2 px-4 pt-5 pb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center border border-white">
-              <span className="text-white text-[10px] font-black tracking-tighter">DEOS</span>
+          <div className="flex items-center gap-3 px-6 pt-10 pb-4">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center border-2 border-white shadow-lg overflow-hidden">
+              <span className="text-white text-[10px] font-black tracking-tighter">ALPHA</span>
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-900 leading-none">@deos.thryve</p>
-              <p className="text-[8px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Maintenant</p>
+              <p className="text-[11px] font-black text-gray-950 leading-none">@thryve.nexus</p>
+              <p className="text-[9px] text-gray-400 mt-1 uppercase font-black tracking-tighter">STREAM EN COURS</p>
             </div>
-            <button className="ml-auto text-gray-300">
-              <ChevronDown className="w-4 h-4" />
+            <button className="ml-auto text-gray-200">
+              <ChevronDown className="w-5 h-5" />
             </button>
           </div>
 
           {/* Media placeholder / preview */}
-          <div className="aspect-square bg-zinc-100 flex items-center justify-center overflow-hidden">
+          <div className="aspect-square bg-zinc-50 flex items-center justify-center overflow-hidden border-y border-gray-100">
             {mediaUrls.length > 0 ? (
-              <img src={mediaUrls[0]} alt="Preview" className="w-full h-full object-cover" />
+              <img src={mediaUrls[0]} alt="Preview" className="w-full h-full object-cover animate-in fade-in zoom-in duration-700" />
             ) : (
-              <div className="text-center opacity-40">
-                <Image className="w-10 h-10 text-zinc-400 mx-auto mb-2" />
-                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Média</p>
+              <div className="text-center opacity-10 scale-150">
+                <Image className="w-20 h-20 text-gray-950 mx-auto mb-4" />
+                <p className="text-[10px] text-gray-950 font-black uppercase tracking-[0.5em]">SYNC MEDIA</p>
               </div>
             )}
           </div>
 
           {/* Icons */}
-          <div className="px-4 py-3 flex items-center gap-4 text-zinc-800">
-            <Heart className="w-5 h-5" />
-            <MessageSquare className="w-5 h-5" />
-            <Send className="w-5 h-5" />
+          <div className="px-6 py-5 flex items-center gap-6 text-gray-900 border-b border-gray-50">
+            <Heart className="w-6 h-6 stroke-[2.5]" />
+            <MessageSquare className="w-6 h-6 stroke-[2.5]" />
+            <Send className="w-6 h-6 stroke-[2.5]" />
           </div>
 
           {/* Caption */}
-          <div className="px-4 pb-6">
-            <p className="text-[11px] text-gray-900 leading-relaxed">
-              <span className="font-black mr-1">deos.thryve</span>
-              {caption || <span className="text-gray-300 italic">Votre texte ici...</span>}
+          <div className="px-6 py-6 flex-1 overflow-y-auto no-scrollbar bg-gray-50/30">
+            <p className="text-[12px] text-gray-950 leading-relaxed font-medium">
+              <span className="font-black mr-2 text-primary">thryve.nexus</span>
+              {caption || <span className="text-gray-300 italic">VOTRE SIGNAL ALPHA ICI...</span>}
             </p>
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div className="flex flex-wrap gap-2 mt-4">
               {hashtags.map((h) => (
-                <span key={h} className="text-[10px] text-blue-600 font-bold">{h}</span>
+                <span key={h} className="text-[10px] text-primary font-black uppercase tracking-tighter">{h}</span>
               ))}
             </div>
           </div>
@@ -207,11 +211,27 @@ export default function CreatePost() {
     // Trigger Automation if publishing 'now'
     if (scheduleType === 'now') {
       try {
-        await publishToAutomation(postData);
+        const autoResults = await publishToAutomation(postData);
+        if (autoResults.some(r => !r.success)) {
+          console.warn('Certaines publications automatisées ont échoué');
+          toast({
+            title: "Transmission Alpha Partielle",
+            description: "Certains canaux n'ont pas répondu. Vérifiez vos terminaux.",
+            variant: "destructive"
+          });
+        } else {
+           toast({
+            title: "Transmission Alpha Réussie",
+            description: "Le signal a été propagé avec succès sur tous les canaux.",
+          });
+        }
       } catch (autoError) {
         console.error('Automation failed:', autoError);
-        // We don't necessarily block since it's already in the DB, 
-        // but we should notify the user.
+        toast({
+          title: "Échec du Signal",
+          description: "Le Core Engine est inaccessible. Passage en mode manuel.",
+          variant: "destructive"
+        });
       }
     }
     
@@ -221,46 +241,41 @@ export default function CreatePost() {
   };
 
   const publishToAutomation = async (post: any) => {
-    // 1. Fetch credentials for the selected account
-    const { data: account, error: accError } = await supabase
-      .from('social_accounts')
-      .select('*')
-      .eq('id', post.account_id)
-      .single();
+    const results = [];
+    
+    // Pour chaque compte sélectionné, on lance l'automatisation
+    for (const accountId of selectedAccounts) {
+      const { data: account, error: accError } = await supabase
+        .from('social_accounts')
+        .select('*')
+        .eq('id', accountId)
+        .single();
 
-    if (accError || !account) {
-      console.warn('Could not find credentials for automation');
-      return;
-    }
+      if (accError || !account) continue;
 
-    const endpoint = post.platform === 'threads' 
-      ? 'http://localhost:3001/api/threads/publish' 
-      : 'http://localhost:3001/api/instagram/publish';
-
-    const body = post.platform === 'threads'
-      ? { 
-          username: account.username, 
-          password: account.password_encrypted, // Note: real app would decrypt
+      if (post.platform === 'threads' || post.platform === 'both') {
+        const res = await automationService.publishThreads({
+          username: account.username,
+          passwordLegacy: account.password_encrypted,
           text: post.caption,
           mediaUrls: post.media_urls
-        }
-      : {
+        });
+        results.push(res);
+      }
+
+      if (post.platform === 'instagram' || post.platform === 'both') {
+        const res = await automationService.publishInstagram({
           username: account.username,
-          password: account.password_encrypted,
+          passwordLegacy: account.password_encrypted,
           caption: post.caption,
-          mediaUrls: post.media_urls
-        };
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      throw new Error('Automation server responded with error');
+          mediaUrls: post.media_urls,
+          type: 'post' // Default to post for now, logic for Reels/Stories can be added UI-side
+        });
+        results.push(res);
+      }
     }
-    return response.json();
+    
+    return results;
   };
 
   const handleSaveDraft = async () => {
@@ -318,29 +333,30 @@ export default function CreatePost() {
   return (
     <DashboardLayout>
       <div className="p-6 lg:p-10 space-y-10 w-full max-w-full">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        {/* Header Stream */}
+        <div className="flex items-center justify-between pb-12 border-b border-white/40">
           <div>
-            <h1 className="text-3xl font-black text-foreground tracking-tighter sm:text-4xl">
-              Créer un post ✏️
+            <h1 className="text-6xl md:text-8xl font-black text-foreground tracking-tighter uppercase leading-[0.8]">
+              STUDIO<br /><span className="text-reveal">ALPHA</span>
             </h1>
-            <p className="text-sm text-muted-foreground mt-1 font-medium">
-              Composez et programmez votre prochaine pépite.
+            <p className="text-[10px] text-foreground/40 mt-6 font-black uppercase tracking-[0.6em]">
+              ORCHESTREZ VOS TRANSMISSIONS MULTI-CANAUX.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              className="rounded-xl font-medium"
+              size="lg"
+              className="rounded-[2rem] px-10 py-10 glass-master border-white/50 font-black uppercase tracking-[0.3em] text-[10px] hover:scale-110 active:scale-95 transition-all duration-700 shadow-xl"
               onClick={handleSaveDraft}
               disabled={saving}
             >
               {saving ? (
-                <div className="w-3.5 h-3.5 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                <div className="w-6 h-6 border-4 border-foreground/30 border-t-transparent rounded-full animate-spin mr-3" />
               ) : (
-                <Save className="mr-2 w-3.5 h-3.5" />
+                <Save className="mr-3 w-6 h-6" />
               )}
-              Enregistrer
+              ARCHIVER BROUILLON
             </Button>
           </div>
         </div>
@@ -348,176 +364,203 @@ export default function CreatePost() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-10">
           {/* Left: Form */}
           <div className="md:col-span-2 lg:col-span-2 2xl:col-span-3 space-y-8">
-            {/* Platform Selection */}
-            <div className="bg-card/40 backdrop-blur-sm rounded-3xl p-8 border border-border/50 shadow-sm transition-all hover:bg-card/50">
-              <h3 className="text-sm font-black text-foreground uppercase tracking-widest mb-6 border-l-4 border-primary pl-4">Plateforme</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Platform Nexus */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-white/5 -z-10" />
+              <div className="flex items-center gap-4 mb-10 border-l-8 border-primary pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">CANAUX DE DIFFUSION</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {([ 
-                  { value: 'instagram', label: 'Instagram', icon: Instagram, color: '#E1306C' },
-                  { value: 'threads', label: 'Threads', icon: MessageSquare, color: '#000000' },
-                  { value: 'both', label: 'Les deux', icon: Globe, color: '#4F46E5' },
+                   { value: 'instagram', label: 'INSTAGRAM', icon: Instagram, color: 'var(--primary)' },
+                   { value: 'threads', label: 'THREADS', icon: MessageSquare, color: 'var(--secondary)' },
+                   { value: 'both', label: 'NEXUS HYBRID', icon: Globe, color: '#8b5cf6' },
                 ] as const).map(({ value, label, icon: Icon, color }) => (
                   <button
                     key={value}
                     onClick={() => setPlatform(value)}
-                    className={`flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-300
-                      ${platform === value ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(79,70,229,0.1)]' : 'border-border/60 bg-white/5 hover:border-primary/30 hover:bg-white/10'}`}
+                    className={`flex flex-col items-center justify-center gap-5 p-10 rounded-[2.5rem] border transition-all duration-700 relative overflow-hidden group
+                      ${platform === value ? 'border-primary ring-2 ring-primary/40 bg-primary/5 shadow-2xl scale-105' : 'border-white/30 bg-white/5 hover:border-primary/40 hover:bg-white/10'}`}
                   >
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: `${color}` }}>
-                      <Icon className="w-5 h-5 text-white" />
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl border border-white/40" style={{ backgroundColor: `${color}20` }}>
+                      <Icon className={`w-8 h-8 animate-crystal`} style={{ color }} />
                     </div>
-                    <span className="text-xs font-black text-foreground uppercase tracking-wider">{label}</span>
+                    <span className="text-[10px] font-black text-foreground uppercase tracking-[0.3em]">{label}</span>
+                    
+                    {platform === value && (
+                      <motion.div 
+                        layoutId="active-glow"
+                        className="absolute inset-0 bg-primary/5 blur-[40px] -z-10"
+                      />
+                    )}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Media */}
-            <div className="bg-card rounded-2xl p-5 border border-border" style={{ boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)' }}>
-              <h3 className="text-sm font-semibold text-foreground mb-4">Médias</h3>
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+            {/* Media Nexus */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="flex items-center gap-4 mb-10 border-l-8 border-secondary pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">UNITÉS MÉDIAS</h3>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-6">
                 <Dialog open={isLibraryOpen} onOpenChange={setIsLibraryOpen}>
                   <DialogTrigger asChild>
-                    <div className="aspect-square border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 hover:border-primary/40 hover:bg-muted/40 transition-colors cursor-pointer">
-                      <Plus className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">Ajouter</span>
+                    <div className="aspect-square glass-master border-[2px] border-dashed border-white/30 rounded-[2rem] flex flex-col items-center justify-center gap-4 hover:border-primary/50 hover:bg-white/10 transition-all duration-700 cursor-pointer group/add">
+                      <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center group-hover/add:scale-110 group-hover/add:bg-primary/10 transition-all duration-700">
+                        <Plus className="w-8 h-8 text-foreground/20 group-hover/add:text-primary animate-crystal" />
+                      </div>
+                      <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">AJOUTER</span>
                     </div>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-                    <DialogHeader>
-                      <DialogTitle>Sélectionner des médias</DialogTitle>
+                  <DialogContent className="max-w-4xl glass-master border-white/40 rounded-[3rem] p-12 shadow-2xl">
+                    <DialogHeader className="mb-8">
+                      <DialogTitle className="text-3xl font-black text-foreground tracking-tighter uppercase">BIBLIOTHÈQUE ALPHA</DialogTitle>
                     </DialogHeader>
-                    <div className="p-1 space-y-4 flex-1 overflow-hidden flex flex-col">
+                    <div className="space-y-8 flex-1 overflow-hidden flex flex-col">
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-foreground/30" />
                         <Input 
-                          placeholder="Rechercher..." 
-                          className="pl-9 rounded-xl"
+                          placeholder="FILTRER LES FLUX..." 
+                          className="pl-16 h-16 rounded-[2rem] glass-master border-white/50 font-black uppercase tracking-widest text-xs focus:bg-white/10"
                           value={mediaSearch}
                           onChange={(e) => setMediaSearch(e.target.value)}
                         />
                       </div>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 overflow-y-auto pr-1">
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-6 overflow-y-auto pr-2 no-scrollbar">
                         {libraryMedia.filter(m => m.name.toLowerCase().includes(mediaSearch.toLowerCase())).map((m) => (
                           <div 
                             key={m.id} 
                             onClick={() => toggleMediaSelection(m.url)}
-                            className={`aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${
-                              selectedMediaUrls.includes(m.url) ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-muted-foreground/30'
-                            }`}
+                            className={`aspect-square rounded-2xl overflow-hidden border-4 cursor-pointer transition-all duration-500 shadow-xl relative group
+                              ${selectedMediaUrls.includes(m.url) ? 'border-primary ring-4 ring-primary/40 scale-[0.98]' : 'border-white/20 hover:border-primary/40 hover:scale-105'}`}
                           >
                             <img src={m.url} alt={m.name} className="w-full h-full object-cover" />
+                            {selectedMediaUrls.includes(m.url) && (
+                              <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                <CheckCircle2 className="w-10 h-10 text-white shadow-2xl" />
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
                     </div>
-                    <div className="flex justify-end gap-3 pt-4 border-t">
-                      <Button variant="ghost" onClick={() => setIsLibraryOpen(false)}>Annuler</Button>
-                      <Button onClick={() => setIsLibraryOpen(false)}>Confirmer ({selectedMediaUrls.length})</Button>
+                    <div className="flex justify-end gap-6 pt-10 mt-6 border-t border-white/20">
+                      <Button variant="ghost" className="rounded-xl font-black uppercase tracking-widest text-[10px]" onClick={() => setIsLibraryOpen(false)}>ANNULER</Button>
+                      <Button className="rounded-[1.5rem] px-10 py-8 bg-primary text-white font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl border-none" onClick={() => setIsLibraryOpen(false)}>
+                        CONFIRMER SYNC ({selectedMediaUrls.length})
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
 
                 {selectedMediaUrls.map((url, i) => (
-                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border relative group">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  <div key={url} className="aspect-square rounded-[2rem] overflow-hidden border border-white/40 relative group shadow-xl">
+                    <img src={url} alt="" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                     <button 
                       onClick={() => toggleMediaSelection(url)}
-                      className="absolute top-1 right-1 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-3 right-3 w-8 h-8 glass-master bg-destructive/60 border-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 hover:scale-110 hover:bg-destructive"
                     >
-                      <X className="w-3 h-3 text-white" />
+                      <X className="w-4 h-4 text-white" />
                     </button>
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2 mt-3">
-                <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1.5">
-                  <Image className="w-3.5 h-3.5" /> Photo
+              
+              <div className="flex gap-4 mt-12 bg-white/5 p-4 rounded-[2rem] border border-white/10 w-fit">
+                <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 text-foreground/60 hover:text-primary">
+                  <Image className="w-4 h-4" /> STATIC ALPHA
                 </Button>
-                <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1.5">
-                  <Video className="w-3.5 h-3.5" /> Vidéo
+                <div className="w-[1px] bg-white/10" />
+                <Button variant="ghost" className="rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 text-foreground/60 hover:text-secondary">
+                  <Video className="w-4 h-4" /> MOTION CHANNELS
                 </Button>
               </div>
             </div>
 
-            {/* Caption */}
-            <div className="bg-card/40 backdrop-blur-sm rounded-3xl p-8 border border-border/50 shadow-sm transition-all hover:bg-card/50">
-              <div className="flex items-center justify-between mb-5 border-l-4 border-accent pl-4">
-                <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Caption</h3>
-                <span className={`text-xs font-black ${captionLength > maxCaption * 0.9 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                  {captionLength} / {maxCaption}
+            {/* Editor Nexus */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-white/5 -z-10" />
+              <div className="flex items-center justify-between mb-10 border-l-8 border-accent pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">FLUX DE CAPTION</h3>
+                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/20 glass-master ${captionLength > maxCaption * 0.9 ? 'text-destructive animate-pulse' : 'text-foreground/40'}`}>
+                  {captionLength} / {maxCaption} OCTETS
                 </span>
               </div>
 
               <Textarea
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                placeholder="Rédigez votre chef-d'œuvre ici... 📖&#10;&#10;Astuce : Attirez l'attention dès le premier mot !"
-                className="min-h-[180px] rounded-2xl resize-none text-base leading-relaxed bg-white/5 border-border/60 focus:ring-primary"
+                placeholder="PROJETEZ VOTRE VISION ALPHA ICI...&#10;&#10;Astuce : Le signal doit être clair et percutant."
+                className="min-h-[250px] rounded-[2rem] resize-none text-xl font-black uppercase tracking-tighter leading-tight bg-white/5 border-white/40 focus:bg-white/10 focus:ring-primary/40 transition-all duration-700 p-10 placeholder:text-foreground/10"
                 maxLength={maxCaption}
               />
 
-              {/* AI & emoji toolbar */}
-              <div className="flex items-center gap-2 mt-3">
-                <button className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 bg-primary/8 px-3 py-1.5 rounded-full border border-primary/15 transition-colors">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Générer avec l'IA
+              {/* Engine Shortcuts */}
+              <div className="flex items-center gap-4 mt-8">
+                <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white bg-primary/10 hover:bg-primary px-8 py-5 rounded-[1.5rem] border border-primary/20 transition-all duration-700 shadow-xl group/ia">
+                  <Sparkles className="w-5 h-5 group-hover/ia:animate-crystal" />
+                  GÉNIUS IA ACTIVER
                 </button>
-                <button className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted px-3 py-1.5 rounded-full transition-colors">
-                  <Smile className="w-3.5 h-3.5" />
-                  Emoji
+                <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground glass-master px-8 py-5 rounded-[1.5rem] border-white/40 transition-all duration-700">
+                  <Smile className="w-5 h-5 text-secondary" />
+                  EMOJI SYNC
                 </button>
               </div>
 
-              {/* Caption suggestions */}
-              <div className="mt-4">
-                <p className="text-xs text-muted-foreground mb-2 font-medium">Suggestions rapides :</p>
-                <div className="flex flex-wrap gap-2">
+              {/* Signal Suggestions */}
+              <div className="mt-10 pt-10 border-t border-white/10">
+                <p className="text-[10px] text-foreground/20 mb-6 font-black uppercase tracking-[0.4em]">SUGGESTIONS DE SIGNAL :</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {CAPTION_SUGGESTIONS.map((s) => (
                     <button
                       key={s}
                       onClick={() => setCaption(s)}
-                      className="text-xs bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg transition-colors truncate max-w-[200px]"
+                      className="text-[9px] glass-master border-white/30 hover:border-primary/50 text-foreground/40 hover:text-foreground p-6 rounded-[1.5rem] transition-all duration-500 text-left uppercase font-black tracking-widest leading-relaxed truncate group/s"
                     >
-                      {s.slice(0, 35)}...
+                      <span className="opacity-0 group-hover/s:opacity-100 transition-opacity mr-2 text-primary">»</span>
+                      {s.slice(0, 50)}...
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Hashtags */}
-            <div className="bg-card rounded-2xl p-5 border border-border" style={{ boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)' }}>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-foreground">Hashtags</h3>
-                <span className="text-xs text-muted-foreground">{hashtags.length}/30</span>
+            {/* Hashtag Stream */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-10 border-l-8 border-primary pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">HASHTAGS ALPHA</h3>
+                <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">{hashtags.length} / 30 TAGS SYNC</span>
               </div>
 
-              <div className="flex gap-2 mb-3">
+              <div className="flex gap-4 mb-10">
                 <div className="relative flex-1">
-                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                  <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/30" />
                   <input
                     type="text"
-                    placeholder="Ajouter un hashtag..."
+                    placeholder="AJOUTER SIGNAL TAG..."
                     value={hashtagInput}
                     onChange={(e) => setHashtagInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addHashtag()}
-                    className="w-full pl-8 pr-4 py-2 text-sm bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                    className="w-full pl-14 pr-6 h-16 rounded-[1.5rem] glass-master border-white/40 focus:bg-white/10 font-black uppercase tracking-widest text-[10px] outline-none transition-all duration-700"
                   />
                 </div>
-                <Button variant="outline" size="sm" className="rounded-xl" onClick={addHashtag}>
-                  Ajouter
+                <Button className="rounded-[1.5rem] px-8 h-16 bg-primary text-white font-black uppercase tracking-widest text-[10px] shadow-xl border-none" onClick={addHashtag}>
+                  AJOUTER
                 </Button>
               </div>
 
               {/* Selected tags */}
               {hashtags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-3 mb-10">
                   {hashtags.map((tag) => (
-                    <span key={tag} className="flex items-center gap-1.5 bg-primary/8 text-primary px-3 py-1 rounded-full text-xs font-semibold border border-primary/15">
+                    <span key={tag} className="flex items-center gap-3 bg-primary/10 text-primary px-5 py-3 rounded-full text-[9px] font-black uppercase tracking-widest border border-primary/20 shadow-sm animate-crystal">
                       {tag}
-                      <button onClick={() => removeHashtag(tag)}>
-                        <X className="w-3 h-3 hover:text-primary/60" />
+                      <button onClick={() => removeHashtag(tag)} className="hover:text-foreground transition-colors">
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </span>
                   ))}
@@ -525,14 +568,14 @@ export default function CreatePost() {
               )}
 
               {/* Suggestions */}
-              <div>
-                <p className="text-xs text-muted-foreground mb-2 font-medium">Hashtags populaires :</p>
-                <div className="flex flex-wrap gap-1.5">
+              <div className="pt-8 border-t border-white/10">
+                <p className="text-[9px] text-foreground/20 mb-6 font-black uppercase tracking-[0.4em]">HASTAGS RECOMMANDÉS :</p>
+                <div className="flex flex-wrap gap-2">
                   {SUGGESTED_HASHTAGS.filter((h) => !hashtags.includes(h)).map((tag) => (
                     <button
                       key={tag}
                       onClick={() => setHashtags([...hashtags, tag])}
-                      className="text-xs bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground px-2.5 py-1 rounded-full transition-colors"
+                      className="text-[8px] glass-master border-white/30 hover:border-primary/50 text-foreground/40 hover:text-foreground px-4 py-2 rounded-full transition-all duration-500 uppercase font-black tracking-widest"
                     >
                       {tag}
                     </button>
@@ -541,137 +584,153 @@ export default function CreatePost() {
               </div>
             </div>
 
-            {/* Schedule */}
-            <div className="bg-card rounded-2xl p-5 border border-border" style={{ boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)' }}>
-              <h3 className="text-sm font-semibold text-foreground mb-4">Publication</h3>
+            {/* Synchronization Control */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="flex items-center gap-4 mb-10 border-l-8 border-secondary pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">PROTOCOLE DE DIFFUSION</h3>
+              </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
                 <button
                   onClick={() => setScheduleType('now')}
-                  className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-200
-                    ${scheduleType === 'now' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                  className={`flex items-center gap-6 p-8 rounded-[2.5rem] border transition-all duration-700 relative overflow-hidden
+                    ${scheduleType === 'now' ? 'border-primary bg-primary/5 shadow-2xl' : 'border-white/30 bg-white/5 hover:border-primary/40'}`}
                 >
-                  <Send className="w-4 h-4 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl glass-master flex items-center justify-center border-white/40 shadow-inner">
+                    <Send className={`w-7 h-7 ${scheduleType === 'now' ? 'text-primary animate-crystal' : 'text-foreground/20'}`} />
+                  </div>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-foreground">Maintenant</p>
-                    <p className="text-xs text-muted-foreground">Publier immédiatement</p>
+                    <p className="text-[10px] font-black text-foreground uppercase tracking-widest">TRANSMISSION DIRECTE</p>
+                    <p className="text-[8px] text-foreground/30 font-black uppercase tracking-[0.2em] mt-1">SANS LATENCE</p>
                   </div>
                 </button>
                 <button
                   onClick={() => setScheduleType('schedule')}
-                  className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-200
-                    ${scheduleType === 'schedule' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                  className={`flex items-center gap-6 p-8 rounded-[2.5rem] border transition-all duration-700 relative overflow-hidden
+                    ${scheduleType === 'schedule' ? 'border-secondary bg-secondary/5 shadow-2xl' : 'border-white/30 bg-white/5 hover:border-secondary/40'}`}
                 >
-                  <Calendar className="w-4 h-4 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl glass-master flex items-center justify-center border-white/40 shadow-inner">
+                    <Calendar className={`w-7 h-7 ${scheduleType === 'schedule' ? 'text-secondary animate-crystal' : 'text-foreground/20'}`} />
+                  </div>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-foreground">Programmer</p>
-                    <p className="text-xs text-muted-foreground">Choisir date & heure</p>
+                    <p className="text-[10px] font-black text-foreground uppercase tracking-widest">TRANSCHRONISME</p>
+                    <p className="text-[8px] text-foreground/30 font-black uppercase tracking-[0.2em] mt-1">PROGRAMMATION ALPHA</p>
                   </div>
                 </button>
               </div>
 
               {scheduleType === 'schedule' && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="grid grid-cols-2 gap-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="grid grid-cols-2 gap-6 p-8 glass-master border-white/40 rounded-[2.5rem] bg-white/5 shadow-inner"
                 >
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Date</label>
+                  <div className="space-y-4">
+                    <label className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.4em] ml-4">DATE ALPHA</label>
                     <input
                       type="date"
                       value={scheduleDate}
                       onChange={(e) => setScheduleDate(e.target.value)}
-                      min="2026-03-15"
-                      className="w-full px-3 py-2 text-sm bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring"
+                      min="2026-03-16"
+                      className="w-full px-8 py-5 rounded-2xl glass-master border-white/40 text-[10px] font-black uppercase tracking-widest focus:bg-white/10 outline-none transition-all"
                     />
                   </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Heure</label>
+                  <div className="space-y-4">
+                    <label className="text-[9px] font-black text-foreground/40 uppercase tracking-[0.4em] ml-4">HEURE ALPHA</label>
                     <input
                       type="time"
                       value={scheduleTime}
                       onChange={(e) => setScheduleTime(e.target.value)}
-                      className="w-full px-3 py-2 text-sm bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-8 py-5 rounded-2xl glass-master border-white/40 text-[10px] font-black uppercase tracking-widest focus:bg-white/10 outline-none transition-all"
                     />
                   </div>
                 </motion.div>
               )}
             </div>
 
-            {/* Accounts Selection */}
-            <div className="bg-card rounded-2xl p-5 border border-border" style={{ boxShadow: '0 2px 12px -4px rgba(0,0,0,0.06)' }}>
-              <h3 className="text-sm font-semibold text-foreground mb-4">Comptes cibles</h3>
-              <div className="space-y-2">
+            {/* Target Account Nexus */}
+            <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+              <div className="flex items-center gap-4 mb-10 border-l-8 border-primary pl-6">
+                <h3 className="text-sm font-black text-foreground uppercase tracking-[0.4em]">CANAUX D'ÉMISSION</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {connectedAccounts.map((account) => (
                   <button
                     key={account.id}
                     onClick={() => toggleAccount(account.id)}
-                    className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-200
-                      ${selectedAccounts.has(account.id) ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
+                    className={`flex items-center gap-6 p-8 rounded-[2.5rem] border transition-all duration-700 relative overflow-hidden group/acc
+                      ${selectedAccounts.has(account.id) ? 'border-primary bg-primary/5 shadow-2xl scale-[1.02]' : 'border-white/30 bg-white/5 hover:border-primary/40'}`}
                   >
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-[10px] font-black flex-shrink-0 shadow-xl border border-white/20"
                       style={{ background: account.platform === 'instagram' ? 'linear-gradient(135deg, #E1306C, #F56040)' : '#000' }}
                     >
                       {account.platform === 'instagram' ? 'IG' : 'TH'}
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-semibold text-foreground">{account.username}</p>
-                      <p className="text-xs text-muted-foreground">{account.followers.toLocaleString()} abonnés</p>
+                      <p className="text-[11px] font-black text-foreground uppercase tracking-widest">{account.username}</p>
+                      <p className="text-[8px] text-foreground/30 font-black uppercase tracking-[0.2em] mt-1 underline-offset-4 decoration-primary">{account.followers.toLocaleString()} REACH</p>
                     </div>
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors
-                      ${selectedAccounts.has(account.id) ? 'bg-primary border-primary' : 'border-border'}`}>
-                      {selectedAccounts.has(account.id) && <CheckCircle2 className="w-3 h-3 text-white" />}
+                    <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all duration-700
+                      ${selectedAccounts.has(account.id) ? 'bg-primary border-primary rotate-0 scale-110 shadow-lg' : 'border-white/20 rotate-45 group-hover/acc:rotate-0'}`}>
+                      {selectedAccounts.has(account.id) && <CheckCircle2 className="w-5 h-5 text-white" />}
                     </div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-3 pt-2 pb-8">
+            {/* Engine Actions */}
+            <div className="flex flex-col sm:flex-row gap-6 pt-10 pb-20">
               <Button
                 variant="outline"
-                className="flex-1 rounded-xl font-semibold py-5"
+                className="flex-1 rounded-[2.5rem] py-12 glass-master border-white/50 font-black uppercase tracking-[0.4em] text-[10px] hover:scale-105 active:scale-95 transition-all duration-700 shadow-xl"
                 onClick={handleSaveDraft}
                 disabled={saving}
               >
-                <Save className="mr-2 w-4 h-4" />
-                Brouillon
+                {saving ? (
+                  <div className="w-5 h-5 border-4 border-foreground/30 border-t-transparent rounded-full animate-spin mr-4" />
+                ) : (
+                  <Save className="mr-4 w-6 h-6" />
+                )}
+                GÉNÉRER BROUILLON
               </Button>
               <Button
-                className="flex-1 rounded-xl font-bold py-5"
+                className="flex-1 rounded-[2.5rem] py-12 bg-primary text-white font-black uppercase tracking-[0.6em] text-[10px] shadow-[0_20px_60px_rgba(79,70,229,0.4)] hover:scale-105 active:scale-95 transition-all duration-700 border-none group/send"
                 onClick={handlePublish}
                 disabled={publishing || selectedAccounts.size === 0}
-                style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
               >
                 {publishing ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin mr-4" />
                 ) : (
-                  <Send className="mr-2 w-4 h-4" />
+                  <Send className="mr-4 w-6 h-6 group-hover/send:translate-x-2 group-hover/send:-translate-y-2 transition-transform duration-500" />
                 )}
-                {scheduleType === 'now' ? 'Publier maintenant' : 'Programmer'}
+                {scheduleType === 'now' ? 'LANCER DIFFUSION' : 'ACTIVER PROGRAMMATION'}
               </Button>
             </div>
           </div>
 
-          {/* Right: Preview */}
+          {/* Right: Immersive Preview */}
           <div className="hidden lg:block">
-            <div className="sticky top-10">
-              <div className="bg-card/40 backdrop-blur-sm rounded-[2.5rem] p-10 border border-border/50 shadow-xl">
-                <h3 className="text-sm font-black text-foreground uppercase tracking-widest mb-8 text-center">Rendu Final</h3>
+            <div className="sticky top-10 space-y-8">
+              <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-primary/5 -z-10" />
+                <h3 className="text-[10px] font-black text-foreground uppercase tracking-[0.6em] mb-12 text-center opacity-40">RENDU FINAL DU SIGNAL</h3>
                 <PhonePreview caption={caption} hashtags={hashtags} platform={platform} mediaUrls={selectedMediaUrls} />
               </div>
 
-              {/* Tips */}
-              <div className="mt-4 bg-primary/5 rounded-2xl p-4 border border-primary/15">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+              {/* Engagement Optimizers */}
+              <div className="glass-master rounded-[2.5rem] p-10 border-white/40 shadow-2xl relative overflow-hidden group/tip">
+                <div className="absolute inset-0 bg-secondary/5 -z-10" />
+                <div className="flex items-start gap-6">
+                  <div className="w-12 h-12 rounded-2xl glass-master flex items-center justify-center border-white/40 shadow-inner group-hover/tip:animate-crystal">
+                    <Sparkles className="w-6 h-6 text-secondary" />
+                  </div>
                   <div>
-                    <p className="text-xs font-semibold text-foreground mb-1">Conseil d'engagement</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Les posts publiés entre 9h-11h et 19h-21h obtiennent en moyenne 2× plus d'engagement.
+                    <p className="text-[10px] font-black text-foreground uppercase tracking-widest mb-3">CONSEIL D'IMPACT ALPHA</p>
+                    <p className="text-[11px] text-foreground/40 font-black uppercase tracking-widest leading-relaxed">
+                      L'ALGORITHME PRIVILÉGIE LES TRANSMISSIONS ENTRE 09H ET 11H. VOTRE REACH POURRAIT AUGMENTER DE 240%.
                     </p>
                   </div>
                 </div>

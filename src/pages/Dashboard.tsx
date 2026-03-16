@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { DashboardLayout } from '@/components/Layout';
 import { StatCard, StatusBadge, PlatformBadge } from '@/components/Cards';
+import { AutomationControl } from '@/components/AutomationControl';
 import { ROUTE_PATHS, formatDateTime } from '@/lib/index';
 import { MOCK_ANALYTICS_DATA, MOCK_ANALYTICS_SUMMARY, MOCK_ACCOUNTS } from '@/data/index';
 import { supabase } from '@/lib/supabase';
@@ -83,24 +84,24 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-10 space-y-10 w-full max-w-full">
+      <div className="p-10 lg:p-16 space-y-16 w-full max-w-full relative">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-10 border-b border-white/40">
           <div>
-            <h1 className="text-3xl font-extrabold text-foreground tracking-tight sm:text-4xl">
-              Vue d'ensemble 👋
+            <h1 className="text-6xl md:text-8xl font-black text-foreground tracking-tighter uppercase leading-[0.8]">
+              ALPHA<br /><span className="text-reveal">WORKSPACE</span>
             </h1>
-            <p className="text-sm text-muted-foreground mt-1 capitalize">
-              {currentDate} · Voici l'état de vos comptes
+            <p className="text-[10px] text-foreground/40 mt-6 font-black uppercase tracking-[0.6em]">
+              {currentDate} · STATUT : OPÉRATIONNEL
             </p>
           </div>
           <Link to={ROUTE_PATHS.CREATE_POST}>
             <Button
-              className="font-semibold rounded-xl hidden sm:flex"
-              style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #14B8A6 100%)' }}
+              size="lg"
+              className="font-black uppercase tracking-[0.3em] rounded-[2rem] px-12 py-10 text-xs hidden sm:flex bg-primary text-white hover:scale-110 active:scale-95 transition-all duration-700 shadow-2xl border-none"
             >
-              <PlusCircle className="mr-2 w-4 h-4" />
-              Nouveau post
+              <PlusCircle className="mr-3 w-6 h-6" />
+              NOUVEL ALPHA
             </Button>
           </Link>
         </div>
@@ -113,140 +114,146 @@ export default function Dashboard() {
         </div>
 
         {/* Charts Row */}
-        <div className="grid lg:grid-cols-3 2xl:grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-3 2xl:grid-cols-4 gap-12">
           {/* Growth Chart */}
-          <div className="lg:col-span-2 2xl:col-span-3 bg-card/40 backdrop-blur-sm rounded-3xl p-8 border border-border/50 shadow-sm transition-all hover:bg-card/50">
-            <div className="flex items-center justify-between mb-8">
+          <div className="lg:col-span-2 2xl:col-span-3 glass-master rounded-[3.5rem] p-12 border-white/40 shadow-xl transition-all duration-700 hover:shadow-2xl hover:scale-[1.01]">
+            <div className="flex items-center justify-between mb-12">
               <div>
-                <h3 className="text-lg font-bold text-foreground">Croissance des abonnés</h3>
-                <p className="text-sm text-muted-foreground">Performances sur les 30 derniers jours</p>
+                <h3 className="text-xs font-black text-foreground uppercase tracking-[0.4em]">CROISSANCE ALPHA</h3>
+                <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest mt-2 px-4 py-1.5 glass-master rounded-full inline-block">Mobiles & Desktop unifiés</p>
               </div>
-              <div className="flex flex-col items-end">
-                <span className="text-sm font-bold text-accent bg-accent/10 px-4 py-1.5 rounded-full">
-                  +{summary.followerGrowth}% ↑
+              <div className="text-right">
+                <span className="text-3xl font-black text-primary tracking-tighter">
+                  +{summary.followerGrowth}%
                 </span>
+                <p className="text-[8px] text-foreground/30 font-black uppercase tracking-widest mt-1">ROI MENSUEL</p>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <AreaChart data={MOCK_ANALYTICS_DATA} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorFollowers" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <CartesianGrid strokeDasharray="10 10" stroke="rgba(0,0,0,0.05)" vertical={false} />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(v: string) => new Date(v).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}
-                  tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+                  tick={{ fontSize: 10, fill: 'var(--foreground)', opacity: 0.4, fontWeight: 900 }}
                   axisLine={false}
                   tickLine={false}
                 />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--foreground)', opacity: 0.4, fontWeight: 900 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="followers"
                   name="abonnés"
-                  stroke="#4F46E5"
-                  strokeWidth={2.5}
+                  stroke="var(--primary)"
+                  strokeWidth={4}
                   fill="url(#colorFollowers)"
                   dot={false}
-                  activeDot={{ r: 5, fill: '#4F46E5' }}
+                  activeDot={{ r: 8, fill: 'white', strokeWidth: 4, stroke: 'var(--primary)' }}
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
           {/* Engagement Summary */}
-          <div className="bg-card/40 backdrop-blur-sm rounded-3xl p-8 border border-border/50 shadow-sm transition-all hover:bg-card/50">
-            <h3 className="text-lg font-bold text-foreground mb-1">Engagement</h3>
-            <p className="text-sm text-muted-foreground mb-8">Taux moyen ce mois</p>
+          <div className="glass-master rounded-[3.5rem] p-12 border-white/40 shadow-xl transition-all duration-700 hover:shadow-2xl hover:scale-[1.01]">
+            <h3 className="text-xs font-black text-foreground mb-1 uppercase tracking-[0.4em]">IMPACT RÉSEAU</h3>
+            <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest mb-10">Score agrégé nexus</p>
 
             {/* Big number */}
-            <div className="text-center py-6">
-              <div className="text-6xl font-black text-primary mb-3 bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+            <div className="text-center py-10">
+              <div className="text-8xl font-black text-primary mb-4 animate-crystal tracking-tighter leading-none">
                 {summary.avgEngagement}%
               </div>
-              <div className="flex items-center justify-center gap-1.5 text-sm font-bold text-accent">
-                <TrendingUp className="w-4.5 h-4.5" />
-                <span>+{summary.engagementGrowth}% vs mois dernier</span>
+              <div className="flex items-center justify-center gap-2">
+                <div className="px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-accent" />
+                  <span className="text-[10px] font-black text-accent uppercase tracking-widest">+{summary.engagementGrowth}% VELOCITY</span>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-5 mt-6">
+            <div className="space-y-6 mt-8">
               {[
-                { label: 'Likes', value: summary.totalLikes, color: '#F43F5E', pct: 68 },
-                { label: 'Commentaires', value: summary.totalComments, color: '#14B8A6', pct: 32 },
+                { label: 'Likes', value: summary.totalLikes, color: 'var(--primary)', pct: 68 },
+                { label: 'Commentaires', value: summary.totalComments, color: 'var(--secondary)', pct: 32 },
               ].map(({ label, value, color, pct }) => (
-                <div key={label} className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground font-bold">{label}</span>
-                    <span className="font-black text-foreground">{value.toLocaleString()}</span>
+                <div key={label} className="space-y-3">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-foreground/40">{label}</span>
+                    <span className="text-foreground">{value.toLocaleString()}</span>
                   </div>
-                  <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+                  <div className="h-2.5 bg-black/5 rounded-full overflow-hidden p-[2px]">
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${pct}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className="h-full rounded-full" 
-                      style={{ backgroundColor: color }} 
+                      transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="h-full rounded-full shadow-[0_0_10px_currentColor]" 
+                      style={{ backgroundColor: color, color: color }} 
                     />
                   </div>
                 </div>
               ))}
             </div>
 
-            <Link to={ROUTE_PATHS.ANALYTICS} className="mt-8 flex items-center justify-center gap-2 py-3 rounded-2xl bg-secondary/50 text-xs font-bold text-foreground hover:bg-secondary transition-colors">
-              <BarChart3 className="w-4 h-4" />
-              Analyse complète
-              <ArrowRight className="w-3.5 h-3.5" />
+            <Link to={ROUTE_PATHS.ANALYTICS} className="mt-12 flex items-center justify-center gap-3 py-5 rounded-[2rem] glass-master border-white/50 text-[10px] font-black uppercase tracking-[0.3em] text-foreground hover:bg-white/40 transition-all duration-500 shadow-sm">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              EXPLORER ALPHA
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
 
         {/* Bottom Row */}
-        <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-12">
           {/* Recent Posts */}
-          <div className="bg-card/40 backdrop-blur-sm rounded-3xl border border-border/50 shadow-sm transition-all hover:bg-card/50 overflow-hidden">
-            <div className="flex items-center justify-between px-8 py-5 border-b border-border/50">
-              <h3 className="text-lg font-bold text-foreground">Publications récentes</h3>
-              <Link to={ROUTE_PATHS.CALENDAR} className="text-xs text-primary font-bold hover:underline">
-                Voir tout
+          <div className="glass-master rounded-[3.5rem] border-white/40 shadow-xl overflow-hidden transition-all duration-700 hover:shadow-2xl">
+            <div className="flex items-center justify-between px-10 py-8 border-b border-white/40">
+              <h3 className="text-xs font-black text-foreground uppercase tracking-[0.4em]">ARCHIVES ALPHA</h3>
+              <Link to={ROUTE_PATHS.CALENDAR} className="text-[10px] text-primary font-black uppercase tracking-widest hover:underline">
+                VOIR TOUT →
               </Link>
             </div>
-            <div className="divide-y divide-border/30">
+            <div className="divide-y divide-white/20">
               {recentPosts.length > 0 ? (
                 recentPosts.map((post) => (
-                  <div key={post.id} className="px-8 py-5 hover:bg-white/5 transition-colors">
-                    <div className="flex items-start justify-between gap-4">
+                  <div key={post.id} className="px-10 py-8 hover:bg-white/40 transition-all duration-500 group">
+                    <div className="flex items-start justify-between gap-6">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-foreground truncate mb-2">{post.caption || 'Sans légende'}</p>
-                        <div className="flex items-center gap-3">
+                        <p className="text-sm font-black text-foreground uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">{post.caption || 'Sans légende'}</p>
+                        <div className="flex items-center gap-4">
                           <PlatformBadge platform={post.platform} />
                           <StatusBadge status={post.status} />
                         </div>
                       </div>
                       {post.likes !== undefined && (
                         <div className="text-right flex-shrink-0">
-                          <p className="text-base font-black text-foreground">{post.likes.toLocaleString()}</p>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">likes</p>
+                          <p className="text-3xl font-black text-foreground leading-none">{post.likes.toLocaleString()}</p>
+                          <p className="text-[8px] text-foreground/30 uppercase tracking-[0.3em] font-black mt-2">REACH ACTIVE</p>
                         </div>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="px-8 py-10 text-center text-muted-foreground text-sm italic">
-                  Aucun post récent pour le moment.
+                <div className="px-10 py-16 text-center text-foreground/30 text-[10px] font-black uppercase tracking-[0.4em] italic">
+                  AUCUNE ARCHIVE DÉTECTÉE
                 </div>
               )}
             </div>
           </div>
 
-          {/* Upcoming Posts + Accounts */}
+          {/* Upcoming Posts + Accounts & Automation */}
           <div className="space-y-8">
+            {/* Automation Control Widget */}
+            <AutomationControl />
+
             {/* Scheduled */}
             <div className="bg-card/40 backdrop-blur-sm rounded-3xl border border-border/50 shadow-sm transition-all hover:bg-card/50 overflow-hidden">
               <div className="flex items-center justify-between px-8 py-5 border-b border-border/50">

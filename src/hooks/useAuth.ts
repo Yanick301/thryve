@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import type { User as AppUser } from '@/lib/index';
 import { supabase } from '@/lib/supabase';
-import { MOCK_USER } from '@/data/index';
 
 interface AuthState {
   user: AppUser | null;
@@ -20,8 +19,8 @@ export function useAuthState(): AuthState {
     console.log('[Auth] Initializing auth state...');
     
     // Check for active session
-    if (import.meta.env.DEV && !import.meta.env.VITE_SUPABASE_URL) {
-      console.log('[Auth] Dev mode, no Supabase URL. Enabling pure mock mode.');
+    if (!import.meta.env.VITE_SUPABASE_URL) {
+      console.error('[Auth] Erreur critique : VITE_SUPABASE_URL manquante.');
       setIsLoading(false);
       return;
     }
@@ -73,17 +72,9 @@ export function useAuthState(): AuthState {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    console.log('[Auth] Attempting login for:', email);
+    const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    console.log('[Auth] Tentative de connexion :', email);
     setIsLoading(true);
-    
-    // Check for demo login
-    if (email === 'demo@example.com' || (import.meta.env.DEV && !import.meta.env.VITE_SUPABASE_URL)) {
-      console.log('[Auth] Using demo login session');
-      setUser(MOCK_USER);
-      setIsLoading(false);
-      return { success: true };
-    }
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -109,28 +100,15 @@ export function useAuthState(): AuthState {
       setIsLoading(false);
       return { success: true };
     } catch (err: any) {
-      console.error('[Auth] Unexpected login error:', err);
-      if (import.meta.env.DEV) {
-        console.warn('[Auth] Falling back to mock user in dev mode after error');
-        setUser(MOCK_USER);
-        setIsLoading(false);
-        return { success: true };
-      }
+      console.error('[Auth] Erreur de connexion inattendue :', err);
       setIsLoading(false);
-      return { success: false, error: 'Une erreur inattendue est survenue.' };
+      return { success: false, error: 'Une erreur inattendue est survenue lors de la connexion.' };
     }
   };
 
   const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    console.log('[Auth] Attempting register for:', email);
+    console.log('[Auth] Tentative d\'inscription :', email);
     setIsLoading(true);
-
-    if (import.meta.env.DEV && !import.meta.env.VITE_SUPABASE_URL) {
-      console.log('[Auth] Using demo register session');
-      setUser({ ...MOCK_USER, name, email });
-      setIsLoading(false);
-      return { success: true };
-    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -173,14 +151,9 @@ export function useAuthState(): AuthState {
       setIsLoading(false);
       return { success: true };
     } catch (err: any) {
-      console.error('[Auth] Unexpected register error:', err);
-      if (import.meta.env.DEV) {
-        setUser({ ...MOCK_USER, name, email });
-        setIsLoading(false);
-        return { success: true };
-      }
+      console.error('[Auth] Erreur d\'inscription inattendue :', err);
       setIsLoading(false);
-      return { success: false, error: 'Une erreur inattendue est survenue.' };
+      return { success: false, error: 'Une erreur inattendue est survenue lors de l\'inscription.' };
     }
   };
 
