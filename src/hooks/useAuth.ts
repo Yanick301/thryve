@@ -13,7 +13,7 @@ interface AuthState {
 
 export function useAuthState(): AuthState {
   const [user, setUser] = useState<AppUser | null>({
-    id: 'alpha-user-id',
+    id: '00000000-0000-0000-0000-000000000000',
     name: 'Alpha User',
     email: 'alpha@thryve.io',
     avatar: 'https://i.pravatar.cc/150?u=alpha',
