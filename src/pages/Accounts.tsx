@@ -268,14 +268,53 @@ function ConnectModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
               </p>
             </div>
 
-            <Button
-              className="w-full rounded-[2rem] py-12 bg-primary text-white font-black uppercase tracking-[0.6em] text-[10px] shadow-2xl disabled:opacity-20 transition-all duration-700 border-none group/next"
-              disabled={!selectedPlatform}
-              onClick={() => setStep('credentials')}
-            >
-              INITIALISER AUTHENTIFICATION
-              <Link className="ml-4 w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </Button>
+            <div className="space-y-4">
+              <Button
+                className="w-full rounded-[2rem] py-12 bg-primary text-white font-black uppercase tracking-[0.6em] text-[10px] shadow-2xl disabled:opacity-20 transition-all duration-700 border-none group/next"
+                disabled={!selectedPlatform}
+                onClick={() => setStep('credentials')}
+              >
+                IDENTIFIANTS MANUELS
+                <Link className="ml-4 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full rounded-[2rem] py-12 glass-master border-white/20 text-foreground font-black uppercase tracking-[0.6em] text-[10px] shadow-xl disabled:opacity-20 transition-all duration-700 group/browser"
+                disabled={!selectedPlatform}
+                onClick={async () => {
+                  if (!selectedPlatform) return;
+                  setStep('connecting');
+                  const res = await automationService.loginInteractive(selectedPlatform);
+                  if (res.success && user) {
+                    // Save to Supabase
+                    const { error } = await supabase.from('social_accounts').insert([
+                      {
+                        user_id: user.id,
+                        platform: selectedPlatform,
+                        username: res.username || 'operator_active',
+                        password_encrypted: 'SESSION_CONNECTED', // No password stored if interactive? Or just a placeholder
+                      }
+                    ]);
+                    
+                    if (!error) {
+                      setStep('success');
+                      onSuccess();
+                      setTimeout(onClose, 1500);
+                    } else {
+                      setStep('credentials');
+                      toast({ title: "Erreur Sync", description: error.message, variant: "destructive" });
+                    }
+                  } else {
+                    setStep('choose');
+                    toast({ title: "Échec Interactive", description: res.error || "La session a été fermée.", variant: "destructive" });
+                  }
+                }}
+              >
+                CONNEXION INTERACTIVE (NAVIGATEUR)
+                <Globe className="ml-4 w-5 h-5 group-hover:animate-spin transition-transform" />
+              </Button>
+            </div>
           </div>
         )}
 

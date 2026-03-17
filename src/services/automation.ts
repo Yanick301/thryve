@@ -129,5 +129,21 @@ export const automationService = {
     } catch (error: any) {
       return { success: false, error: error.message };
     }
+  },
+
+  /**
+   * Start an interactive login session (Opens browser)
+   */
+  async loginInteractive(platform: 'instagram' | 'threads'): Promise<AutomationResponse & { username?: string }> {
+    try {
+      const response = await fetch(`${AUTOMATION_API_URL}/api/login-interactive`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform }),
+      });
+      return await response.json();
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
   }
 };

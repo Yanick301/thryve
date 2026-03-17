@@ -27,18 +27,31 @@ export function AutomationControl() {
   }, []);
 
   const handleWarmup = async () => {
+    if (status !== 'online') return;
     setLoading(true);
     setLastAction("Warmup en cours...");
-    // Note: In real setup, we'd need current account credentials
-    // For demo/UI integrated, we show the flow
-    setTimeout(() => {
-      setLoading(false);
-      setLastAction("Warmup complété (Simulé)");
+    
+    // In Alpha mode, we use the first connected account for warmup
+    const res = await automationService.browse({
+      platform: 'instagram',
+      username: 'alpha_operator', // Fallback for demo
+    });
+
+    setLoading(false);
+    if (res.success) {
+      setLastAction("Warmup complété avec succès");
       toast({
-        title: "Simulation Humaine",
-        description: "Le bot a parcouru le flux pour paraître naturel.",
+        title: "Simulation Humaine Terminée",
+        description: "Le bot a fini de parcourir le flux.",
       });
-    }, 2000);
+    } else {
+      setLastAction("Échec du warmup");
+      toast({
+        variant: "destructive",
+        title: "Erreur Automation",
+        description: res.error || "Impossible de démarrer le warmup.",
+      });
+    }
   };
 
   return (

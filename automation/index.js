@@ -7,6 +7,7 @@ import postPublisher from './postPublisher.js';
 import engagementManager from './engagementManager.js';
 import scrollManager from './scrollManager.js';
 import browserManager from './browserManager.js';
+import interactiveLogin from './interactiveLogin.js';
 
 import { downloadMedia } from './utils.js';
 
@@ -39,6 +40,26 @@ app.post('/api/verify', async (req, res) => {
     res.json({ success: true, message: 'Account verified successfully' });
   } catch (error) {
     res.status(401).json({ success: false, error: 'Authentication failed' });
+  }
+});
+
+/**
+ * Trigger Interactive Login (Opens browser)
+ * Body: { platform }
+ */
+app.post('/api/login-interactive', async (req, res) => {
+  const { platform } = req.body;
+  console.log(`🌐 Launching interactive ${platform} session...`);
+  
+  try {
+    const result = await interactiveLogin.start(platform);
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
