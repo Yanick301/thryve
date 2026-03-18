@@ -8,6 +8,7 @@ class BrowserManager {
   constructor() {
     this.browser = null;
     this.context = null;
+    this.sessionsDir = './automation/sessions';
   }
 
   /**
@@ -45,6 +46,46 @@ class BrowserManager {
 
     console.log('✅ Browser initialized successfully.');
     return this.browser;
+  }
+
+  /**
+   * Loads a session for a specific user if it exists
+   * @param {string} username 
+   */
+  async loadSession(username) {
+    if (!this.browser) await this.init();
+    
+    const fs = await import('fs');
+    const path = await import('path');
+    const sessionPath = path.join(this.sessionsDir, `${username}.json`);
+
+    if (fs.existsSync(sessionPath)) {
+      console.log(`📂 Loading session for ${username}...`);
+      this.context = await this.browser.newContext({
+        storageState: sessionPath,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      });
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Saves the current session for a specific user
+   * @param {string} username 
+   */
+  async saveSession(username) {
+    if (!this.context) return;
+    
+    const fs = await import('fs');
+    const path = await import('path');
+    if (!fs.existsSync(this.sessionsDir)) {
+      fs.mkdirSync(this.sessionsDir, { recursive: true });
+    }
+
+    const sessionPath = path.join(this.sessionsDir, `${username}.json`);
+    await this.context.storageState({ path: sessionPath });
+    console.log(`💾 Session saved for ${username}.`);
   }
 
   /**

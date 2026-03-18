@@ -171,6 +171,29 @@ app.post('/api/browse', async (req, res) => {
 });
 
 /**
+ * Sync account statistics
+ * Body: { platform, username, password }
+ */
+app.post('/api/sync', async (req, res) => {
+  const { platform, username, password, passwordLegacy } = req.body;
+  const actualPassword = password || passwordLegacy;
+
+  try {
+    let stats = {};
+    if (platform === 'instagram') {
+      const page = await instagramBot.login(username, actualPassword);
+      stats = await instagramBot.extractStats(page, username);
+    } else if (platform === 'threads') {
+      const page = await threadsBot.login(username, actualPassword);
+      stats = await threadsBot.extractStats(page, username);
+    }
+    res.json({ success: true, stats });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * Health check
  */
 app.get('/health', (req, res) => {

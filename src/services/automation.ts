@@ -3,7 +3,7 @@
  * Handles communication with the Playwright automation server.
  */
 
-const AUTOMATION_API_URL = 'http://localhost:3001';
+const AUTOMATION_API_URL = import.meta.env.VITE_AUTOMATION_URL || 'http://localhost:3001';
 
 export interface AutomationResponse {
   success: boolean;
@@ -140,6 +140,26 @@ export const automationService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platform }),
+      });
+      return await response.json();
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Sync account statistics
+   */
+  async syncAccount(data: {
+    platform: 'instagram' | 'threads';
+    username: string;
+    passwordLegacy?: string;
+  }): Promise<AutomationResponse & { stats?: any }> {
+    try {
+      const response = await fetch(`${AUTOMATION_API_URL}/api/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
       return await response.json();
     } catch (error: any) {

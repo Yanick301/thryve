@@ -21,18 +21,49 @@ import { automationService } from '@/services/automation';
 import { toast } from '@/hooks/use-toast';
 
 // ─── Account Card Nexus ─────────────────────────────────────────────
-function AccountCard({ account, onDisconnect, onSync }: {
+function AccountCard({ account, onDisconnect, onSync, onRefresh }: {
   account: SocialAccount;
   onDisconnect: (id: string) => void;
-  onSync: (id: string) => void;
+  onSync: (id: string, stats: any) => void;
+  onRefresh: () => void;
 }) {
   const [syncing, setSyncing] = useState(false);
 
   const handleSync = async () => {
     setSyncing(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setSyncing(false);
-    onSync(account.id);
+    try {
+      const res = await automationService.syncAccount({
+        platform: account.platform as any,
+        username: account.username,
+        // If we have password_encrypted (which is stored in Supabase), it should be passed here
+        // but since we only have the SocialAccount object, we might need more info.
+        // Actually, the automation server now uses sessions, so it might not need the password.
+      });
+
+      if (res.success && res.stats) {
+        // Update statistics in Supabase
+        const { error } = await supabase
+          .from('social_accounts')
+          .update({
+            followers: res.stats.followers,
+            last_sync: new Date().toISOString()
+          })
+          .eq('id', account.id);
+
+        if (!error) {
+          onSync(account.id, res.stats);
+          toast({ title: "Synchronisation Réussie", description: `${account.username} est à jour.` });
+        } else {
+          toast({ title: "Erreur Sync", description: error.message, variant: "destructive" });
+        }
+      } else {
+        toast({ title: "Échec Sync", description: res.error || "Impossible de joindre le serveur.", variant: "destructive" });
+      }
+    } catch (err) {
+      toast({ title: "Erreur", description: "Une erreur critique est survenue.", variant: "destructive" });
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const stats = [
@@ -444,9 +475,13 @@ export default function Accounts() {
     );
   };
 
-  const handleSync = (id: string) => {
+  const handleSync = (id: string, stats: any) => {
     setAccounts((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, lastSync: new Date().toISOString() } : a))
+      prev.map((a) => (a.id === id ? { 
+        ...a, 
+        lastSync: new Date().toISOString(),
+        followers: stats.followers 
+      } : a))
     );
   };
 
@@ -528,6 +563,7 @@ export default function Accounts() {
                     account={account}
                     onDisconnect={handleDisconnect}
                     onSync={handleSync}
+                    onRefresh={fetchAccounts}
                   />
                 ))}
               </AnimatePresence>
@@ -547,6 +583,7 @@ export default function Accounts() {
                     account={account}
                     onDisconnect={handleDisconnect}
                     onSync={handleSync}
+                    onRefresh={fetchAccounts}
                   />
                 ))}
               </AnimatePresence>

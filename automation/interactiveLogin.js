@@ -49,16 +49,35 @@ class InteractiveLogin {
       console.log('✅ Login detected!');
       
       // Try to extract username from profile link or something
-      let username = 'unknown_nexus';
+      let username = 'operator_active';
       try {
         if (platform === 'instagram') {
+           // Wait a bit for the profile link to appear
+           await page.waitForSelector('a[href*="/"] img[alt*="profil"], a[href*="/"] img[alt*="Profile"]', { timeout: 10000 }).catch(() => {});
+           
            username = await page.evaluate(() => {
-             const link = document.querySelector('a[href*="/"] img[alt*="profil"]')?.closest('a')?.getAttribute('href');
-             return link ? link.replace(/\//g, '') : 'operator_active';
+             // Look for the profile link in the sidebar or top nav
+             const profileLinks = Array.from(document.querySelectorAll('a[href^="/"]'));
+             for (const link of profileLinks) {
+               const href = link.getAttribute('href');
+               // Instagram profile links are usually /username/ and don't contain common paths
+               if (href && href.length > 2 && !['/explore', '/reels', '/direct', '/accounts', '/emails'].some(p => href.includes(p))) {
+                 const potentialUsername = href.replace(/\//g, '');
+                 if (potentialUsername && potentialUsername !== 'create' && potentialUsername !== 'notifications') {
+                   return potentialUsername;
+                 }
+               }
+             }
+             return 'operator_active';
            });
         }
       } catch (err) {
         console.warn('Could not extract username, using default.');
+      }
+
+      // Save session if we have a username
+      if (username !== 'operator_active') {
+        await browserManager.saveSession(username);
       }
 
       // Close page but maybe keep browser for other tasks if needed?
