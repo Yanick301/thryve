@@ -1,0 +1,12 @@
+[variables]
+    NODE_ENV = 'production'
+    AUTOMATION_PORT = '3001'
+
+[phases.setup]
+    nixPkgs = ['nodejs', 'playwright-driver-bin']
+
+[phases.build]
+    cmds = ['npm install']
+
+[start]
+    cmd = 'npm run automation'
